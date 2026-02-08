@@ -11,7 +11,7 @@ const App = () => {
   const [title , Settitle] = useState('')
   const [description , Setdescription] = useState('')
   function fetch(){
-       axios.get('http://localhost:3000/api/notes')    .then((res)=>{
+       axios.get('https://backend-series-1-fxa0.onrender.com/api/notes')    .then((res)=>{
       setNotes(res.data.notes || [])
     })
     .catch((err)=>{
@@ -28,7 +28,7 @@ function formHandle(e){
 
   if(update){
     // UPDATE MODE
-    axios.patch(`http://localhost:3000/api/notes/${Editid}`, {
+    axios.patch(`https://backend-series-1-fxa0.onrender.com/api/notes/${Editid}`, {
       title: title,
       description: description
     }).then((res)=>{
@@ -42,7 +42,7 @@ function formHandle(e){
   }
   else{
     // CREATE MODE
-    axios.post('http://localhost:3000/api/notes',{
+    axios.post('https://backend-series-1-fxa0.onrender.com/api/notes',{
       title: title,
       description: description
     }).then((res)=>{
@@ -55,7 +55,7 @@ function formHandle(e){
 }
 
 function deleteHandle(id){
-  axios.delete('http://localhost:3000/api/notes/' + id).then((res)=>{
+  axios.delete('https://backend-series-1-fxa0.onrender.com/api/notes/' + id).then((res)=>{
     console.log(res.data);
     fetch()
   })
