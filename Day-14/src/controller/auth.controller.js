@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 const userModel = require('../model/insta.model')
+const bcrypt = require('bcryptjs')
 async function registerController(req, res){
     const { email, username, password, bio, profileImg } = req.body;
     const IsUserAlreadyExist = await userModel.findOne({
@@ -14,7 +15,7 @@ async function registerController(req, res){
             message: 'User is already exist' + (IsUserAlreadyExist.email) == email ? "Email is alread exist" : "Username is already exist"
         })
     }
-    const hash = crypto.createHash('sha256').update(password).digest('hex')
+    const hash = await bcrypt.hash(password , 10)
     const user = await userModel.create({
         username,
         email,
@@ -54,8 +55,8 @@ async function  LoginController(req, res){
             message:"Username is not found"
         })
     }
-    const hash = crypto.createHash('sha256').update(password).digest('hex')
-    const IsPasswoedValid = hash == user.password
+   
+    const IsPasswoedValid = await bcrypt.compare(password , user.password)
     if(!IsPasswoedValid){
         return res.status(401).json({
             message:"password is Invalid"
