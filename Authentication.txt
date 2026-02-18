@@ -2,3 +2,19 @@ Authentication -> Identify Karna Ki request kis user ke pass se aarahi hai?
 Authorization -> User kya kya kar sakta hai?
 validation -> data ka formate chack karna
 varification -> Data sahi hai ya nahi
+
+
+
+Client (Browser / Postman)
+        ↓
+Express Server (multer)
+        ↓
+req.file / req.files (RAM में store)
+        ↓
+Server → ImageKit API
+        ↓
+ImageKit return करता है URL
+        ↓
+Server DB में URL save करता है
+        ↓
+Response वापस client को
