@@ -7,4 +7,5 @@ const postController = require('../controller/post.controller')
 postRoute.post('/',upload.single('image') , UserIdentify , postController.postController)
 postRoute.get('/' , UserIdentify ,  postController.getpostController )
 postRoute.get('/detail/:postid' , UserIdentify  ,postController.getPostDetails)
+postRoute.post('/like/:postid' , UserIdentify , postController.LikeController  )
 module.exports = postRoute  

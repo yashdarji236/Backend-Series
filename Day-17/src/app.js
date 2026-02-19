@@ -3,12 +3,20 @@ const express = require('express')
 const app = express()
 const cookieParser = require('cookie-parser')
 const Connect = require('./config/database')
-const AuthRouter = require('./Route/auth.route')
-const postRoute = require('./Route/post.route')
+
 
 app.use(express.json())
 Connect()
 app.use(cookieParser())
+
+/* Require Routes */
+const AuthRouter = require('./Route/auth.route')
+const postRoute = require('./Route/post.route')
+const FollowRoute = require('./Route/user.Router')
+
+
+/* Using Routes */
 app.use('/auth' , AuthRouter)
-app.use('/post' , postRoute)
+app.use('/posts' , postRoute)
+app.use('/user' , FollowRoute)
 module.exports=app

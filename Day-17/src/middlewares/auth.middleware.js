@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 async function IdentifyUser(req,res,next){
-      if (!req.file) {  
-    return res.status(400).json({ message: "No file uploaded" });
-  }
+  
   const token = req.cookies.token
   if (!token) {
     return res.status(401).json({
