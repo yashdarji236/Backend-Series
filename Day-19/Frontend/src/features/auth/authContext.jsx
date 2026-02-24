@@ -17,11 +17,11 @@ export function AuthProvider({ children }) {
     try {
         const response = await login(username, password)
         setUser(response.user)
-        return response   // ✅ IMPORTANT
+        return response   
     }
     catch (err) {
         console.log(err)
-        throw err         // optional but better
+        throw err         
     } 
     finally {
         setLoading(false)
