@@ -12,7 +12,7 @@ const FollowSceme = new mongoose.Schema({
         type: String,
         default: "pending",
         enum: {
-            values: ["pending", "accepted", "rejecte"],
+            values: ["pending", "accepted", "reject"],
             message: "Status can only be pending , accepted or rejected"
         }
     }

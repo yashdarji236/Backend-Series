@@ -8,19 +8,26 @@ export const useAuth = ()=>{
 
 
     const handleLogin = async  (username , password)=>{
-        Setloading(true)
-        const res = await login(username , password)
+         Setloading(true);
 
-        Setuser(res.user)
+  const res = await login(username, password);
 
-        Setloading(false)
-        return res
+  if (res.success) {
+     localStorage.setItem("user", JSON.stringify(res.data.user));
+    Setuser(res.data.user); 
+  }
+
+  Setloading(false);
+  return res;
     }
 
-    const handleRegister = async (username , email , password)=>{
+    const handleRegister = async (username , email , password , profileImg , bio)=>{
         Setloading(true)
-        const res = await register(username , email , password)
-        Setuser(res.user)
+        const res = await register(username , email , password  ,profileImg , bio)
+         if (res.success) {
+     localStorage.setItem("user", JSON.stringify(res.data.user));
+    Setuser(res.data.user); 
+  }
         Setloading(false)
         return res
     }

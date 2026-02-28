@@ -4,11 +4,14 @@ import { user } from './Router'
 import './Feature/shared/global.scss'
 import { Authprovider } from './Feature/auth/auth.Context'
 import { PostProvider } from './Feature/post/postContext'
+import { FollowProvider } from './Feature/Follow/FollowContext'
 const App = () => {
   return (
     <Authprovider>
       <PostProvider>
-        <RouterProvider router={user} />
+        <FollowProvider>
+          <RouterProvider router={user} />
+        </FollowProvider>
       </PostProvider>
     </Authprovider>
   )

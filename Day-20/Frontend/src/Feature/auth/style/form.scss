@@ -108,6 +108,17 @@ main{
                     background-color: transparent;
                 }
         }
+        .error-text{
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: red;
+            padding-inline: 1rem;
+            padding-block: 0.6rem;
+            color: white;
+            font-weight: 500;
+            border-radius: 0.5rem;
+        }
     }
 }
 

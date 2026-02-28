@@ -7,6 +7,7 @@ const Login = () => {
     const navigate = useNavigate()
     const [username , Setusername] = useState('')
     const [password , Setpassword] = useState('')
+    const [error, setError] = useState("");
     if(loading){
     return <main> <h1>Loading....</h1></main>
   }
@@ -14,12 +15,18 @@ const Login = () => {
     const handleSubmit= async (e)=>{
         e.preventDefault()
         const res = await handleLogin(username , password)
-        console.log(res);
-         if (res) {
+        if (res.success) {
     navigate('/', {
-      state: { message: `Welcome back ${username} 👋` }
-    })
+      state: {
+        message: `Welcome back ${username} 👋`,
+        userName: username
+      }
+    });
+  } else {
+    // ❌ stay on login page
+    setError(res.message);
   }
+
 
         
     }
@@ -36,14 +43,14 @@ const Login = () => {
             <i class="ri-instagram-line"></i>
             <h2>Log into Instagram</h2>
             <input 
-            onInput={(e)=>{Setusername(e.target.value)}} 
+            onInput={(e)=>{Setusername(e.target.value),  setError("")}} 
             name='username'
             type="text"
-             placeholder='Enter Your Username or Email' 
+             placeholder='Enter Your Username or Email'  
              required/>
 
             <input 
-            onInput={(e)=>{Setpassword(e.target.value)}} 
+            onInput={(e)=>{Setpassword(e.target.value) ,  setError("")}} 
             type="password" 
             name='password'
             placeholder='Enter Your Password'
@@ -53,6 +60,7 @@ const Login = () => {
             <a className='create' href='/Register'>Create New Account</a>
 
           </form>
+          {error && <p className="error-text">{error}</p>}
         </div>
       
     </main>

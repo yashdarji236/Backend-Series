@@ -11,7 +11,7 @@ async function registerController(req, res){
     })
     if (IsUserAlreadyExist) {
         return res.status(409).json({
-            message: 'User is already exist' + (IsUserAlreadyExist.email) == email ? "Email is alread exist" : "Username is already exist"
+            message: (IsUserAlreadyExist.email) == email ? "Email is alread exist" : "Username is already exist"
         })
     }
     const hash = await bcrypt.hash(password , 10)
@@ -93,7 +93,19 @@ async function GetmeController(req,res){
         }
     })
 }
-
+async function GetAllusers(req,res){
+    const user = await userModel.find({} , "username profileImg")
+    if(!user){
+        return res.status(400).json({
+            message:"user data is not Fetched!"
+        })
+    }
+    return res.status(200).json({
+        message:"userdata successfully fetched",
+        user
+    })
+    
+}
 module.exports = {
-    registerController, LoginController , GetmeController
+    registerController, LoginController , GetmeController , GetAllusers
 }

@@ -7,6 +7,6 @@ const AuthRouter = express.Router()
 AuthRouter.post('/register' , AuthController.registerController)
 
 AuthRouter.post('/login' , AuthController.LoginController)
-
+AuthRouter.get('/user',identifyuser , AuthController.GetAllusers)
 AuthRouter.get("/get-me", identifyuser , AuthController.GetmeController)
 module.exports = AuthRouter

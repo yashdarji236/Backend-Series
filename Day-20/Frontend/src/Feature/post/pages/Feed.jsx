@@ -1,13 +1,23 @@
 import React from 'react'
 import { useLocation } from "react-router"
-import Post from "../pages/component/Post"
+import Post from "../component/Post"
 import { useEffect, useState } from "react"
 import { usePost } from '../hook/usepost'
+import { useNavigate } from 'react-router'
 import '../style/feed.scss'
+import Navbar from '../../shared/component/Navbar'
+import { useAuth } from '../../auth/hooks/useAuth'  
 const Home = () => {
-    const {feed , handleGetfeed , loading} = usePost()
+    const { user } = useAuth()
+    const {feed , handleGetfeed  , loading , handleLiked , handleunLiked} = usePost()
     const location = useLocation()
+    const usenavigate = useNavigate()
     const [message, setMessage] = useState('')
+     useEffect(() => {
+        if (!user && !loading) {
+            usenavigate('/login')
+        }
+    }, [user , loading])
     useEffect(() => {
         if (location.state?.message) {
             setMessage(location.state.message)
@@ -23,15 +33,27 @@ const Home = () => {
     if(loading){
         return <main><h1>Feed is Loading...</h1></main>
     }
-    console.log(feed);
+   
+    
     
     return (
         <main className='feed-pages'>
+            
+            <Navbar/>
         <div className="feed">
             <div className="posts">
-               {feed.map(post=>{
-                        return <Post user={post.user} post={post} />
-                    })}
+               {feed
+   ?.filter(post => post && post.user)
+   .map(post => (
+      <Post 
+         key={post._id}
+         user={post.user}
+         post={post}
+         loading={loading}
+         handleLiked={handleLiked}
+         handleunLiked={handleunLiked}
+      />
+))}
             </div>  
         </div>
         <div>

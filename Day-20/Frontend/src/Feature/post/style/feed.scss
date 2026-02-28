@@ -1,12 +1,14 @@
 .feed-pages{
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
     padding: 1rem;
+    margin-left: 6vw;
     .feed{
         max-width: 400px;
         width: 100%;
-
+        
         .posts{
             width: 100%;
             display: flex;
@@ -19,7 +21,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            background-color: rgb(66, 25, 25);
+            background-color: rgb(31, 18, 18);
             padding-inline: 0.6rem;
             padding-block: 0.4rem;
             border-radius: 0.4rem;
@@ -89,5 +91,14 @@
                   }
                 }
         }
+    }
+}
+
+
+@media (max-width:900px) {
+    .feed-pages{
+        margin-left:0vw;
+
+        padding-bottom: 4rem;
     }
 }

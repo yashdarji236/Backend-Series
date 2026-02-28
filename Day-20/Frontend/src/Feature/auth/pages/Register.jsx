@@ -7,6 +7,9 @@ const Register = () => {
     const [ username , Setusername ] = useState('')
     const [email , Setemail] = useState('')
     const [ password , Setpassword ] = useState('')
+    const [profileImg , SetprofileImg] = useState("")
+    const [bio , Setbio] = useState("")
+    const [error, setError] = useState("");
     const navigate = useNavigate()
 
     if(loading){
@@ -14,11 +17,17 @@ const Register = () => {
     }
     const handleSubmit= async (e)=>{
         e.preventDefault()
-        const res = await handleRegister(username , email , password)
-        console.log(res);
-        navigate('/', {
-          state:{message:`welcome ${username}`}
-        })
+        const res = await handleRegister(username , email , password , profileImg , bio)
+       if (res.success) {
+    navigate('/', {
+      state: {
+        message: `Welcome  ${username} 👋`,
+        userName: username
+      }
+    });
+  } else {
+    setError(res.message);
+  }
         
     }
   return (
@@ -36,30 +45,43 @@ const Register = () => {
             <h2>Register into Instagram</h2>
 
             <input 
-            onInput={(e)=>{Setusername(e.target.value)}}
+            onInput={(e)=>{Setusername(e.target.value) , setError("")}}
               type="text"
                name='username' 
                placeholder='Enter Your Username ' 
                required/>
 
              <input
-             onInput={(e)=>{Setemail(e.target.value)}}
+             onInput={(e)=>{Setemail(e.target.value) , setError("")}}
              type="text"
              name='email'
               placeholder='Enter Your email '
                required/>
             <input 
-            onInput={(e)=>{Setpassword(e.target.value)}}
+            onInput={(e)=>{Setpassword(e.target.value) , setError("")}}
             type="password" 
             name='password'
              placeholder='Enter Your Password' 
              required/>
-
+               <input 
+            onInput={(e)=>{SetprofileImg(e.target.value) , setError("")}}
+            type="text" 
+            name='profileImg'
+             placeholder='Enter Your image url' 
+             />
+                <input 
+            onInput={(e)=>{Setbio(e.target.value) , setError("")}}
+            type="text" 
+            name='bio'
+             placeholder='Enter Your Bio' 
+             />
+            
 
             <button>Register</button>
             <a className='create'href='/login'>Already Have a Account</a>
 
           </form>
+          {error && <p className="error-text">{error}</p>}
         </div>
       
     </main>
