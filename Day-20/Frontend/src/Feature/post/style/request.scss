@@ -1,0 +1,54 @@
+.req{
+     position: absolute;
+    right: 2rem;
+    display: flex;
+    
+    flex-direction: column;
+    padding-block: 2rem;
+    height: 100%;
+    width: 60%;
+    
+    margin-bottom: 2rem;
+    gap: 1rem;
+
+    .req1{
+        padding: 1rem;
+        background-color: rgb(70, 53, 53);
+        border-radius: 1rem;
+        display: flex;
+        justify-content: space-between;
+        color: white;
+        align-items: center;
+
+
+        .btn{
+            background-color: rgb(71, 71, 232);
+            padding: 0.6rem;
+            border-radius: 1rem;
+            color: white;
+            cursor: pointer;
+            &:active{
+                transform: scale(90%);
+            }
+        }
+    }
+}
+
+
+@media (max-width:900px) {
+    .req{
+        width: 90%;
+        gap: 1rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        
+        .req1{
+            margin-left: 1rem;
+            width: 100%;
+            border-radius: 1rem;
+            color: white;
+        }
+       
+    }
+}

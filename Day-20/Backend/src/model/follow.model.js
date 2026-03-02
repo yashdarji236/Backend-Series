@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const FollowSceme = new mongoose.Schema({
+    
     follower: {
         type: String,
 

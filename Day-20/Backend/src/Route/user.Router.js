@@ -15,5 +15,6 @@ userRoute.patch("/follow/accept/:username", identifyUser ,followuser.acceptFollo
 userRoute.patch("/follow/reject/:username", identifyUser ,followuser.rejectFollowRequest)
 userRoute.post("/follow/:username" , identifyUser , followuser.followController)
 userRoute.post("/follow/unfollow/:username" , identifyUser , followuser.unfollowController)
-
+userRoute.get("/follow/accept", identifyUser , followuser.GetFollowers)
+userRoute.get("/follow/user/users", identifyUser , followuser.GetUsers)
 module.exports = userRoute

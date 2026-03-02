@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '../../shared/component/Navbar'
 import { useUsers } from '../../auth/hooks/allUsers'
 import { useFollow } from '../../Follow/hook/useFollow'
@@ -6,12 +6,15 @@ import '../style/users.scss'
 
 const Users = () => {
   const { users, loading } = useUsers()
-
+  const {user} = useFollow()
   const {
     request,
     handleRequest,
+    
   } = useFollow()
-
+  useEffect(()=>{
+      
+  } , [])
   if (loading) return <p>Loading...</p>
   if (!users.length) return <p>No users found</p>
 
@@ -22,7 +25,7 @@ const Users = () => {
       <div className='users'>
         {users.map(user => {
           const status = request?.[user.username]
-           // pending / accepted / rejected
+          // pending / accepted / rejected
 
           return (
             <div className='user' key={user._id}>
@@ -51,7 +54,7 @@ const Users = () => {
 
               {status === "rejected" && (
                 <button onClick={() => handleRequest(user._id)}>
-                  Follow 
+                  Follow
                 </button>
               )}
             </div>

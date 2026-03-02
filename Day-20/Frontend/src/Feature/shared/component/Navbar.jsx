@@ -13,7 +13,7 @@ const Navbar = () => {
   return (
     <nav>
        <div className="top">
-         <p>{user?.username}</p>
+         <p className='ins'>Instagram</p>
          <div className="user">
              <NavLink
   to="/"

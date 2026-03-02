@@ -126,10 +126,32 @@ async function unfollowController(req,res){
         message: `You have unfollowed ${followeeUsername}`
     })
 }
+async function GetFollowers(req,res){
+    const currentUsername = req.user.username
+    const Followers = await followModel.find({
+        followee: currentUsername,
+        status: "accepted"
+    })
+    res.status(200).json({
+        total: Followers.length,
+        Followers
+    })
+
+}
+async function GetUsers(req,res){
+    const currentUsername = req.user.username
+    const Users = await followModel.find({})
+    res.status(200).json({
+        Users
+    })
+}
+
 module.exports = {
     followController , 
     getFollowRequests,
     acceptFollowRequest,
     rejectFollowRequest,
-    unfollowController
+    unfollowController,
+    GetFollowers ,
+    GetUsers
 }

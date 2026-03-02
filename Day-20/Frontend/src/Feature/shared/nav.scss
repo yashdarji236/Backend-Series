@@ -1,3 +1,8 @@
+@font-face {
+    font-family: insta;
+    src: url('../../../public/billabong.ttf');
+}
+
 nav{
     width: 25%;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -18,10 +23,18 @@ nav{
         display: flex;
         gap: 3rem;
         flex-direction: column;
-        p{
-            font-size: x-large;
-            font-weight: 500;
-        }
+       .ins{
+        font-family: insta;
+        font-weight: 200;
+        
+        font-size: 80px;
+        background: linear-gradient(to right, #FF5904, #D900B8);
+  background-clip: text;              /* REQUIRED */
+  -webkit-background-clip: text;      /* Chrome / Edge */
+  
+  color: transparent;                 /* REQUIRED */
+  -webkit-text-fill-color: transparent;
+       }
         .user{
             display: flex;
             flex-direction: column;

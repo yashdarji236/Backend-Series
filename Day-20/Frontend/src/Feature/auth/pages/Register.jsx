@@ -63,12 +63,31 @@ const Register = () => {
             name='password'
              placeholder='Enter Your Password' 
              required/>
-               <input 
-            onInput={(e)=>{SetprofileImg(e.target.value) , setError("")}}
-            type="text" 
-            name='profileImg'
-             placeholder='Enter Your image url' 
-             />
+              <input
+  type="text"
+  placeholder="Enter your image URL"
+  onChange={(e) => {
+    const url = e.target.value;
+    setError("");
+
+    if (!url) {
+      SetprofileImg("https://ik.imagekit.io/szvl9xygyl/Default_User_image.png");
+      return;
+    }
+
+    const img = new Image();
+    img.src = url;
+
+    img.onload = () => {
+      SetprofileImg(url); // ✅ valid image
+    };
+
+    img.onerror = () => {
+      SetprofileImg("https://ik.imagekit.io/szvl9xygyl/Default_User_image.png"); // ❌ broken image
+      setError("Invalid image URL");
+    };
+  }}
+/>
                 <input 
             onInput={(e)=>{Setbio(e.target.value) , setError("")}}
             type="text" 

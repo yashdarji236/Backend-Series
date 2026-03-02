@@ -94,7 +94,7 @@ async function GetmeController(req,res){
     })
 }
 async function GetAllusers(req,res){
-    const user = await userModel.find({} , "username profileImg")
+    const user = await userModel.find({})
     if(!user){
         return res.status(400).json({
             message:"user data is not Fetched!"
