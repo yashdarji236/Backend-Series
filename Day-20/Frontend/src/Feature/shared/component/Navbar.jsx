@@ -1,80 +1,51 @@
 import React from 'react'
 import '../nav.scss'
-import { useNavigate } from 'react-router-dom'
-import { Link, useLocation } from "react-router"
-import { useEffect, useState } from "react"
-import { NavLink } from 'react-router'
+import { Link } from "react-router-dom"
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../auth/hooks/useAuth'
+
 const Navbar = () => {
-    const usenavigate = useNavigate()
-    const { user } = useAuth();
-  
-   
+  const { user } = useAuth();
+
   return (
     <nav>
-       <div className="top">
-         <p className='ins'>Instagram</p>
-         <div className="user">
-             <NavLink
-  to="/"
-  className={({ isActive }) =>
-    isActive ? "option active" : "option"
-  }
->
-  Feed
-</NavLink>
+      <div className="top">
+        <p className='ins'>Instagram</p>
 
-<NavLink
-  to="/users"
-  className={({ isActive }) =>
-    isActive ? "option active" : "option"
-  }
->
-  Users
-</NavLink>
+        <div className="user">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => isActive ? "option active" : "option"}
+          >
+            <i className="ri-home-2-fill"></i>
+            <span>Feed</span>
+          </NavLink>
 
-<NavLink
-  to="/profile"
-  className={({ isActive }) =>
-    isActive ? "option active" : "option"
-  }
->
-  Profile
-</NavLink>
+          <NavLink
+            to="/users"
+            className={({ isActive }) => isActive ? "option active" : "option"}
+          >
+            <i className="ri-group-fill"></i>
+            <span>Users</span>
+          </NavLink>
 
+          <NavLink
+            to="/profile"
+            className={({ isActive }) => isActive ? "option active" : "option"}
+          >
+            <i className="ri-user-3-fill"></i>
+            <span>Profile</span>
+          </NavLink>
+        </div>
+      </div>
 
-         </div>
-       </div>
-       <div className="bot">
-        <div className="icons">
-    <NavLink
-  to="/"
-  className={({ isActive }) =>
-    isActive ? "icon on" : "icon"
-  }
->
-  <i class="ri-home-2-fill"></i>
-</NavLink>
-<NavLink
-  to="/users"
-  className={({ isActive }) =>
-    isActive ?"icon on" : "icon"
-  }
->
-  <i class="ri-group-fill"></i>
-</NavLink>
-<NavLink
-  to="/profile"
-  className={({ isActive }) =>
-    isActive ?"icon on" : "icon"
-  }
->
-    <i class="ri-user-3-fill"></i>
-</NavLink>
-</div>
-          <Link to='/login' className='out'>Logout</Link>
-       </div>
-       
+      <div className="bot">
+        <Link to='/login' className='out'>
+          <i className="ri-logout-box-r-line"></i>
+          <span>Logout</span>
+        </Link>
+      </div>
     </nav>
   )
 }

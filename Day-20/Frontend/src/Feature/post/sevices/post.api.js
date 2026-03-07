@@ -28,4 +28,12 @@ export async function postUnliked(postId){
     return res.data
 }
 
+export async function GetUserPosts(){
+    const res = await api.get("/posts/")
+    return res.data
+}
 
+export async function GetLikes(postId){
+    const res = await api.get("/posts/likes/"+postId)
+    return res.data
+}

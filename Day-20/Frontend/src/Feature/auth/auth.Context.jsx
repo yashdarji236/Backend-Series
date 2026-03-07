@@ -11,7 +11,7 @@ export const Authprovider = ({ children })=>{
     if (storedUser) {
       Setuser(JSON.parse(storedUser));
     }
-    Setloading(false);
+    Setloading(false);                                       
   }, []);
 
     return (

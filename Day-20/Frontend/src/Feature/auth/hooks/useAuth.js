@@ -1,11 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../auth.Context";
 import { login , register , Getme } from '../service/auth.sevice'
 
 export const useAuth = ()=>{
     const context = useContext(AuthContext)
-    const {  user , Setuser , loading , Setloading } = context
-
+    const {  user , Setuser , loading , Setloading} = context
+    
 
     const handleLogin = async  (username , password)=>{
          Setloading(true);
@@ -31,6 +31,7 @@ export const useAuth = ()=>{
         Setloading(false)
         return res
     }
+   
 
 
     return {

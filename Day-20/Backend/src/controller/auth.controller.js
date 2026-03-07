@@ -26,15 +26,15 @@ async function registerController(req, res){
         id: user._id,
         username:user.username
     }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
-    res.cookie('token', token);
-    res.status(200).json({
-        user: {
-            email: user.email,
-            username: user.username,
-            bio: user.bio,
-            profileImg: user.profileImg
-        }
-    })
+        res.cookie('token', token);
+        res.status(200).json({
+            user: {
+                email: user.email,
+                username: user.username,
+                bio: user.bio,
+                profileImg: user.profileImg
+            }
+        })
 }
 
 
@@ -94,6 +94,7 @@ async function GetmeController(req,res){
     })
 }
 async function GetAllusers(req,res){
+    const username = req.user
     const user = await userModel.find({})
     if(!user){
         return res.status(400).json({
@@ -102,6 +103,7 @@ async function GetAllusers(req,res){
     }
     return res.status(200).json({
         message:"userdata successfully fetched",
+        user:user.username,
         user
     })
     

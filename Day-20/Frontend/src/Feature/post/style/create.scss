@@ -1,61 +1,280 @@
-.form-con{
-     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
+// ── Variables ──────────────────────────────────────────
+$bg-primary:     #0a0a0a;
+$bg-card:        #111111;
+$bg-input:       #161616;
+$border-color:   #2a2a2a;
+$border-focus:   #444444;
+$text-primary:   #f5f5f5;
+$text-muted:     #737373;
+$accent-grad:    linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+$accent-red:     #e63950;
+$radius-sm:      8px;
+$radius-md:      14px;
+$radius-full:    999px;
+$transition:     0.2s ease;
 
-    form{
-    height: 40vh;
-    width: 30vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    
-
-    .label-img{
-        width: 70%;
-        border: 1px solid white;
-        padding: 1rem;
-        border-radius: 1rem;
-    }
-    input{
-         width: 70%;
-        border: 1px solid white;
-        padding: 1rem;
-        border-radius: 1rem;
-        background: transparent;
-        color: white;
-    }
-     .button{
-        color: white;
-        background-color: red;
-        width: fit-content;
-        padding-block: 0.7rem;
-        padding-inline: 2rem;
-        font-size: large;
-        
-    }
-}
-}
-.back{
-        color: white;
-        background-color: red;
-        width: fit-content;
-        padding-block: 0.7rem;
-        padding-inline: 2rem;
-        font-size: large;
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        border-radius: 1rem;
+@mixin flex($dir: row, $justify: flex-start, $align: center) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $justify;
+  align-items: $align;
 }
 
-@media (max-width:800px) {
-    .form-con{
-        form{
-            height: 40vh;
-    width: 100vw;
+// ══════════════════════════════════════════════════════
+// .form-con — full page wrapper
+// ══════════════════════════════════════════════════════
+.form-con {
+  min-height: 100vh;
+  background: $bg-primary;
+  @include flex(column, center, center);
+  padding: 2rem 1rem;
+  position: relative;
+
+  // ── Page heading ──────────────────────────────────
+  h1, h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $text-primary;
+    letter-spacing: 0.01em;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  // ── Card form wrapper ─────────────────────────────
+  form {
+    width: min(420px, 90vw);
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $radius-md;
+    padding: 2.5rem 2rem;
+    @include flex(column, flex-start, stretch);
+    gap: 1.1rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.55);
+
+    // ── Image preview area ────────────────────────
+    .preview-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: $radius-sm;
+      overflow: hidden;
+      background: #0e0e0e;
+      border: 1px dashed $border-focus;
+      @include flex(row, center, center);
+      position: relative;
+      cursor: pointer;
+      transition: border-color $transition, background $transition;
+
+      &:hover { border-color: #666; background: #131313; }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: $radius-sm;
+      }
+
+      // Placeholder icon when no image
+      .preview-placeholder {
+        @include flex(column, center, center);
+        gap: 0.5rem;
+        color: $text-muted;
+
+        svg {
+          width: 2.5rem;
+          height: 2.5rem;
+          stroke: $text-muted;
+          fill: none;
         }
+
+        span {
+          font-size: 0.83rem;
+          color: $text-muted;
+        }
+      }
     }
+
+    // ── File input label (hidden real input) ──────
+    .label-img {
+      width: 100%;
+      @include flex(row, center, center);
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid $border-color;
+      border-radius: $radius-sm;
+      background: $bg-input;
+      color: $text-muted;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: border-color $transition, background $transition, color $transition;
+      user-select: none;
+
+      &:hover {
+        border-color: $border-focus;
+        background: #1c1c1c;
+        color: $text-primary;
+      }
+
+      svg {
+        width: 1.1rem;
+        height: 1.1rem;
+        stroke: currentColor;
+        fill: none;
+        flex-shrink: 0;
+      }
+
+      // Hide the actual file input
+      input[type="file"] {
+        display: none;
+      }
+    }
+
+    // ── Text inputs ───────────────────────────────
+    input[type="text"],
+    input[type="caption"],
+    textarea,
+    input:not([type="file"]):not([type="submit"]):not([type="button"]) {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: $bg-input;
+      border: 1px solid $border-color;
+      border-radius: $radius-sm;
+      color: $text-primary;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color $transition, box-shadow $transition, background $transition;
+      resize: none;
+
+      &::placeholder { color: $text-muted; }
+
+      &:focus {
+        border-color: $border-focus;
+        background: #161616;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+      }
+    }
+
+    textarea {
+      min-height: 90px;
+      line-height: 1.5;
+    }
+
+    // ── Submit button ─────────────────────────────
+    .button,
+    button[type="submit"],
+    input[type="submit"] {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: none;
+      outline: none;
+      border-radius: $radius-full;
+      background: $accent-grad;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(220, 39, 67, 0.35);
+      transition: opacity $transition, transform $transition, box-shadow $transition;
+      margin-top: 0.4rem;
+
+      &:hover {
+        opacity: 0.88;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(220, 39, 67, 0.5);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+
+    // ── Error / success message ───────────────────
+    .form-msg {
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: $radius-sm;
+
+      &.error {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.08);
+        border: 1px solid rgba(255, 107, 107, 0.2);
+      }
+
+      &.success {
+        color: #6bcb77;
+        background: rgba(107, 203, 119, 0.08);
+        border: 1px solid rgba(107, 203, 119, 0.2);
+      }
+    }
+  }
+}
+
+// ── Back button ────────────────────────────────────────
+.back {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 50;
+  @include flex(row, center, center);
+  gap: 0.4rem;
+  color: $text-primary;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: $radius-full;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background $transition, border-color $transition, transform $transition;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    stroke: currentColor;
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: #1c1c1c;
+    border-color: #404040;
+    transform: translateX(-2px);
+  }
+
+  &:active { transform: translateX(0); }
+}
+
+// ══════════════════════════════════════════════════════
+// RESPONSIVE
+// ══════════════════════════════════════════════════════
+@media (max-width: 800px) {
+  .form-con {
+    padding: 1.5rem 0.75rem 4rem;
+
+    form {
+      width: 92vw;
+      padding: 1.75rem 1.25rem;
+    }
+  }
+
+  .back {
+    top: 0.85rem;
+    left: 0.85rem;
+    font-size: 0.82rem;
+    padding: 0.45rem 0.9rem;
+  }
 }

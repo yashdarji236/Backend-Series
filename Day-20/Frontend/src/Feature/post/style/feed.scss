@@ -1,104 +1,248 @@
-.feed-pages{
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    padding: 1rem;
-    margin-left: 6vw;
-    .feed{
-        max-width: 400px;
-        width: 100%;
-        
-        .posts{
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+// ── Variables ──────────────────────────────────────────
+$bg-primary:      #0a0a0a;
+$bg-card:         #111111;
+$border-color:    #262626;
+$text-primary:    #f5f5f5;
+$text-secondary:  #a8a8a8;
+$text-muted:      #737373;
+$accent-red:      #ff3040;
+$accent-grad:     conic-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888, #f09433);
+$nav-collapsed:   72px;
+$radius-md:       12px;
+$transition:      0.2s ease;
 
+@mixin flex($dir: row, $justify: flex-start, $align: center) {
+    display: flex;
+    flex-direction: $dir;
+    justify-content: $justify;
+    align-items: $align;
+}
+
+// ══════════════════════════════════════════════════════
+// .feed-pages
+// ══════════════════════════════════════════════════════
+.feed-pages {
+    margin-left: $nav-collapsed;
+    min-height: 100vh;
+    background: $bg-primary;
+    @include flex(column, flex-start, center);
+    padding: 2rem 1rem 5rem;
+
+    .feed {
+        width: min(480px, 92vw);
+        @include flex(column, flex-start, stretch);
+
+        .posts {
+            width: 100%;
+            @include flex(column, flex-start, stretch);
+            gap: 0;
         }
-        .post{
-            width: 100%;   
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background-color: rgb(31, 18, 18);
-            padding-inline: 0.6rem;
-            padding-block: 0.4rem;
-            border-radius: 0.4rem;
-            margin-bottom: 1rem;
-            .user{
-                display: flex;
-                gap: 2rem;
-                align-items: center;
-                
-                .img-wrap{
+    }
+
+    // ══════════════════════════════════════════════════
+    // .post
+    // ══════════════════════════════════════════════════
+    .post {
+        width: 100%;
+        @include flex(column, flex-start, stretch);
+        background: $bg-card;
+        border: 1px solid $border-color;
+        border-radius: $radius-md;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: border-color $transition, box-shadow $transition;
+
+        &:hover {
+            border-color: #2e2e2e;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        // ── .user ─────────────────────────────────────
+        .user {
+            @include flex(row, flex-start, center);
+            gap: 0.75rem;
+            padding: 0.8rem 1rem;
+
+            .img-wrap {
+                padding: 2.5px;
+                background: $accent-grad;
+                border-radius: 50%;
+                flex-shrink: 0;
+                cursor: pointer;
+                transition: transform $transition;
+                &:hover { transform: scale(1.06); }
+
+                img {
+                    width: 2.5rem;
+                    height: 2.5rem;
                     border-radius: 50%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    border: 3px solid transparent;
-                    background: conic-gradient(#FF5904 , #D900B8 , #FF5904) border-box;
+                    border: 2px solid $bg-card;
+                    object-fit: cover;
+                    display: block;
                 }
-                img{
-                    width: 3rem;
-                     height: 3rem;
-                     border-radius: 50%;
-                }
-               
             }
-            img{
-                width: 100%;
+
+            p {
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: $text-primary;
             }
-             .icons{
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                  .left{
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: 1rem;
-                    
-                      svg{
-                        width: 1rem;
-                        aspect-ratio: 1/1;
-                        color: white;
+        }
+
+        // ── post image ────────────────────────────────
+        > img {
+            width: 100%;
+            display: block;
+            max-height: 585px;
+            object-fit: cover;
+        }
+
+        // ── .icons ────────────────────────────────────
+        .icons {
+            @include flex(row, space-between, center);
+            padding: 0.6rem 0.75rem 0.2rem;
+
+            .left {
+                @include flex(row, flex-start, center);
+                gap: 0.1rem;
+
+                button {
+                    background: transparent;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    padding: 0.35rem;
+                    border-radius: 50%;
+                    @include flex(row, center, center);
+                    transition: background $transition;
+                    &:hover { background: rgba(255, 255, 255, 0.06); }
+
+                    svg {
+                        width: 1.6rem;
+                        height: 1.6rem;
+                        display: block;
+                        transition: transform 0.15s ease;
                     }
-                    button{
-                        background-color: transparent;
-                        border: none;
-                        outline: none;
-                    }
-                    .like{
-                        color: red;
-                    }
-                    .unlike{
-                        color: white;
-                    }
-                    
-                  }
-                  .right{
-                       svg{
-                        width: 1rem;
-                        aspect-ratio: 1/1;
-                        color: white;
-                    }
-                    button{
-                        background-color: transparent;
-                        border: none;
-                        outline: none;
-                    }
-                  }
+                    &:hover svg { transform: scale(1.15); }
                 }
+
+                // ── svg.like — filled red when post.isLiked = true ──
+                svg.like {
+                    fill: $accent-red !important;
+                    color: $accent-red !important;
+                    animation: likePop 0.3s ease forwards;
+                }
+
+                // ── svg.unlike — outline white when not liked ───────
+                svg.unlike {
+                    fill: $text-primary !important;
+                    color: $text-primary !important;
+                    // the heart SVG path uses fill so no stroke needed
+                }
+
+                // hover on unlike: preview red
+                button:hover svg.unlike {
+                    fill: $accent-red !important;
+                    color: $accent-red !important;
+                }
+
+                // comment + share buttons
+                button:nth-child(2) svg,
+                button:nth-child(3) svg {
+                    fill: $text-primary;
+                    color: $text-primary;
+                }
+                button:nth-child(2):hover svg { fill: #64b5f6; color: #64b5f6; }
+                button:nth-child(3):hover svg { fill: $text-secondary; color: $text-secondary; }
+            }
+
+            .right {
+                button {
+                    background: transparent;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    padding: 0.35rem;
+                    border-radius: 50%;
+                    @include flex(row, center, center);
+                    transition: background $transition;
+                    &:hover { background: rgba(255, 255, 255, 0.06); }
+
+                    svg {
+                        width: 1.6rem;
+                        height: 1.6rem;
+                        fill: $text-primary;
+                        color: $text-primary;
+                        display: block;
+                        transition: transform 0.15s ease, fill $transition;
+                    }
+                    &:hover svg { transform: scale(1.15); fill: #fff; }
+                }
+            }
+        }
+
+        // ── .btn — caption ────────────────────────────
+        // Note: your JSX has a typo "captiom" — both are covered below
+        .btn {
+            @include flex(column, flex-start, flex-start);
+            gap: 0.3rem;
+            padding: 0.3rem 1rem 0.85rem;
+
+            .captiom,
+            .caption {
+                color: #d8d8d8;
+                font-size: 0.87rem;
+                line-height: 1.5;
+                white-space: pre-wrap;
+                word-break: break-word;
+
+                &.truncated {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+            }
+
+            .more-btn {
+                align-self: flex-start;
+                background: transparent;
+                border: none;
+                color: $text-muted;
+                cursor: pointer;
+                font-size: 0.82rem;
+                font-family: inherit;
+                padding: 0;
+                transition: color $transition;
+                &:hover { color: $text-secondary; }
+            }
         }
     }
 }
 
+// ── Like pop animation ─────────────────────────────────
+@keyframes likePop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.4); }
+    70%  { transform: scale(0.88); }
+    100% { transform: scale(1); }
+}
 
-@media (max-width:900px) {
-    .feed-pages{
-        margin-left:0vw;
+// ══════════════════════════════════════════════════════
+// RESPONSIVE
+// ══════════════════════════════════════════════════════
+@media (max-width: 900px) {
+    .feed-pages {
+        margin-left: 0;
+        padding: 1rem 0 6rem;
 
-        padding-bottom: 4rem;
+        .feed { width: 100vw; }
+
+        .post {
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            margin-bottom: 0.75rem;
+        }
     }
 }

@@ -7,13 +7,26 @@ import { useNavigate } from 'react-router'
 import '../style/feed.scss'
 import Navbar from '../../shared/component/Navbar'
 import { useAuth } from '../../auth/hooks/useAuth'  
+import { Getme } from '../../auth/service/auth.sevice'
 const Home = () => {
     const { user } = useAuth()
     const {feed , handleGetfeed  , loading , handleLiked , handleunLiked} = usePost()
     const location = useLocation()
     const usenavigate = useNavigate()
     const [message, setMessage] = useState('')
+    useEffect(() => {
+    const checkAuth = async () => {
+        try {
+            await Getme()   // wait for API
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    checkAuth()
+}, [])
      useEffect(() => {
+        
         if (!user && !loading) {
             usenavigate('/login')
         }
@@ -21,7 +34,7 @@ const Home = () => {
     useEffect(() => {
         if (location.state?.message) {
             setMessage(location.state.message)
-
+            
             setTimeout(() => {
                 setMessage('')
             }, 3000)

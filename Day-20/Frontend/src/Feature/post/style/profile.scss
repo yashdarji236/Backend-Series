@@ -1,140 +1,501 @@
-.box{
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+// ── Variables ──────────────────────────────────────────
+$bg-primary:      #0a0a0a;
+$bg-card:         #111111;
+$bg-modal:        rgba(0, 0, 0, 0.88);
+$border-color:    #262626;
+$text-primary:    #f5f5f5;
+$text-secondary:  #a8a8a8;
+$text-muted:      #737373;
+$accent-red:      #ff3040;
+$accent-grad:     linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+$story-ring:      conic-gradient(#f09433, #e6683c, #dc2743, #cc2366, #bc1888, #f09433);
+$nav-collapsed:   72px;
+$radius-sm:       8px;
+$radius-md:       14px;
+$radius-full:     999px;
+$transition:      0.2s ease;
 
-
-    .box1{
-        height: 20%;
-        width: 70vw;
-        display: flex;
-
-        justify-content: flex-end;
-        align-items: flex-start;
-        padding: 1rem;
-        gap: 2rem;
-
-       img{
-        width: 13%;
-        border-radius: 50%;
-       }
-
-       .user{
-        height: 20%;
-        width: 30%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 2rem;
-
-        p{
-            color: white;
-            font-size: x-large;
-        }
-        .follow{
-            width: 100%;
-            height: 60%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-
-
-            .post{
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-
-
-                .post1{
-                    font-size: x-large;
-
-
-
-                    
-                }
-                .count{
-                        font-size: x-large;
-                        font-weight: bold;
-                        color: white;
-                    }
-            }
-        }
-       }
-    }
-    .btn{
-        padding: 1rem;
-        width: 20%;
-
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        gap: 2rem;
-        margin-left: 10rem;
-
-
-        .create{
-                    padding: 1rem;
-                    border-radius: 1rem;
-                    color: white;
-                    cursor: pointer;
-                     background-color: rgb(218, 55, 55);
-                     
-        }
-      
-    }
-   
+@mixin flex($dir: row, $justify: flex-start, $align: center) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $justify;
+  align-items: $align;
 }
 
+// ══════════════════════════════════════════════════════
+// .box — profile page
+// ══════════════════════════════════════════════════════
+.box {
+  margin-left: $nav-collapsed;
+  min-height: 100vh;
+  background: $bg-primary;
+  @include flex(column, flex-start, center);
+  padding: 2.5rem 0 4rem;
 
-@media (max-width:900px) {
-    .box{
-        justify-content: center;
+  // ── Profile header ─────────────────────────────────
+  .box1 {
+    width: min(820px, 88vw);
+    @include flex(row, flex-start, center);
+    gap: 3.5rem;
+    padding: 1.5rem 0;
 
-
-        .box1{
-            height: 20%;
-            margin-right: 4rem;
-            width: 70vw;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            padding-top: 4rem;
-
-
-            img{
-                width: 40%;
-            }
-
-
-            .user{
-                height: 13%;
-                gap: 1rem;
-
-                p{
-
-                }
-
-                .follow{
-                    gap: 1rem;
-
-
-                    .post{
-
-                        .post1{
-                            font-size: medium;
-                        }
-                    }
-                }
-            }
-        }
-       .btn{
-        width: 70%;
-        margin-left: 8rem;
-       }
+    > img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      padding: 3px;
+      background: $story-ring;
+      box-shadow: 0 0 0 2px $bg-primary, 0 6px 24px rgba(220,39,67,0.25);
+      transition: transform $transition, box-shadow $transition;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.04);
+        box-shadow: 0 0 0 2px $bg-primary, 0 8px 32px rgba(220,39,67,0.45);
+      }
     }
+
+    .user {
+      @include flex(column, center, flex-start);
+      gap: 1.1rem;
+      flex: 1;
+
+      > p {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: $text-primary;
+      }
+
+      .follow {
+        @include flex(row, flex-start, center);
+        gap: 2.5rem;
+
+        .post {
+          @include flex(column, center, center);
+          gap: 1px;
+          cursor: pointer;
+          transition: opacity $transition;
+          &:hover { opacity: 0.75; }
+
+          .count {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: $text-primary;
+            line-height: 1.2;
+          }
+
+          .post1 {
+            font-size: 0.8rem;
+            color: $text-secondary;
+          }
+        }
+      }
+    }
+  }
+
+  // ── Action buttons ─────────────────────────────────
+  .btn {
+    width: min(820px, 88vw);
+    @include flex(row, flex-end, center);
+    gap: 0.75rem;
+    padding: 0 0 1.5rem;
+
+    .create {
+      padding: 0.52rem 1.2rem;
+      border-radius: $radius-sm;
+      background: $accent-grad;
+      color: #fff;
+      font-size: 0.87rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      box-shadow: 0 3px 14px rgba(220,39,67,0.35);
+      transition: opacity $transition, transform $transition, box-shadow $transition;
+      user-select: none;
+
+      &:hover {
+        opacity: 0.88;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220,39,67,0.5);
+      }
+      &:active { transform: translateY(0); }
+
+      &:last-child {
+        background: transparent;
+        border: 1.5px solid #363636;
+        color: $text-primary;
+        box-shadow: none;
+        &:hover { background: #1a1a1a; border-color: #4a4a4a; opacity: 1; }
+      }
+    }
+  }
+
+  // ── Posts heading ──────────────────────────────────
+  .line {
+    width: min(820px, 88vw);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    color: $text-muted;
+    padding: 1rem 0 1.5rem;
+    border-top: 1px solid $border-color;
+  }
+
+  // ── Posts grid ─────────────────────────────────────
+  .user-post {
+    width: min(820px, 88vw);
+
+    .posts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+
+    .post {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      cursor: pointer;
+      background: #1a1a1a;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+
+      > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+        pointer-events: none;
+        draggable: false;
+      }
+
+      .user, .icons, .btn { display: none; }
+
+      // Hover overlay
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.42);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+
+      &:hover > img { transform: scale(1.05); }
+      &:hover::after { opacity: 1; }
+      &:hover .post-overlay { opacity: 1; }
+
+      // Active (press) state — slight scale down
+      &:active {
+        > img { transform: scale(0.97); }
+        &::after { opacity: 0.6; }
+      }
+
+      // Like count overlay
+      .post-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        @include flex(row, center, center);
+        gap: 1.5rem;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+
+        span {
+          @include flex(row, center, center);
+          gap: 0.35rem;
+          color: #fff;
+          font-weight: 700;
+          font-size: 0.95rem;
+          svg { width: 1.1rem; height: 1.1rem; fill: #fff; }
+        }
+      }
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// PEEK overlay — shows on hold/long press
+// ══════════════════════════════════════════════════════
+.peek-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  @include flex(row, center, center);
+  pointer-events: none;
+  animation: peekIn 0.18s ease forwards;
+
+  .peek-card {
+    width: min(340px, 80vw);
+    border-radius: $radius-md;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px $border-color;
+    transform: scale(1);
+    animation: peekScale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+
+    img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
+    }
+  }
+}
+
+@keyframes peekIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes peekScale {
+  from { transform: scale(0.88); }
+  to   { transform: scale(1); }
+}
+
+// ══════════════════════════════════════════════════════
+// Full post modal — single click
+// ══════════════════════════════════════════════════════
+.post-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: $bg-modal;
+  backdrop-filter: blur(5px);
+  @include flex(row, center, center);
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+
+  .post-modal {
+    position: relative;
+    width: min(480px, 94vw);
+    max-height: 92vh;
+    overflow-y: auto;
+    border-radius: $radius-md;
+    background: $bg-card;
+    border: 1px solid $border-color;
+    scrollbar-width: none;
+    animation: slideUp 0.25s ease;
+
+    &::-webkit-scrollbar { display: none; }
+
+    .modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      z-index: 10;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      color: #fff;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      @include flex(row, center, center);
+      font-size: 1rem;
+      transition: background $transition;
+      &:hover { background: rgba(255,255,255,0.18); }
+    }
+
+    // Post inside modal — full feed style
+    .post {
+      width: 100%;
+      @include flex(column, flex-start, stretch);
+      background: $bg-card;
+      border: none;
+      border-radius: 0;
+      margin-bottom: 0;
+
+      .user {
+        display: flex !important;
+        @include flex(row, flex-start, center);
+        gap: 0.75rem;
+        padding: 0.8rem 1rem;
+
+        .img-wrap {
+          padding: 2.5px;
+          background: $story-ring;
+          border-radius: 50%;
+          flex-shrink: 0;
+
+          img {
+            width: 2.4rem;
+            height: 2.4rem;
+            border-radius: 50%;
+            border: 2px solid $bg-card;
+            object-fit: cover;
+            display: block;
+          }
+        }
+
+        p {
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: $text-primary;
+        }
+      }
+
+      > img {
+        width: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .icons {
+        display: flex !important;
+        @include flex(row, space-between, center);
+        padding: 0.6rem 0.75rem 0.2rem;
+
+        .left {
+          @include flex(row, flex-start, center);
+          gap: 0.1rem;
+
+          button {
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 0.35rem;
+            border-radius: 50%;
+            @include flex(row, center, center);
+            &:hover { background: rgba(255,255,255,0.06); }
+
+            svg {
+              width: 1.5rem;
+              height: 1.5rem;
+              display: block;
+              transition: transform 0.15s ease;
+            }
+            &:hover svg { transform: scale(1.15); }
+          }
+
+          svg.like {
+            fill: $accent-red !important;
+            color: $accent-red !important;
+            animation: likePop 0.3s ease forwards;
+          }
+
+          svg.unlike {
+            fill: $text-primary !important;
+            color: $text-primary !important;
+          }
+
+          button:hover svg.unlike {
+            fill: $accent-red !important;
+            color: $accent-red !important;
+          }
+
+          button:nth-child(2) svg,
+          button:nth-child(3) svg {
+            fill: $text-primary;
+            color: $text-primary;
+          }
+        }
+
+        .right {
+          button {
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 0.35rem;
+            border-radius: 50%;
+            @include flex(row, center, center);
+            svg {
+              width: 1.5rem;
+              height: 1.5rem;
+              fill: $text-primary;
+              display: block;
+              transition: transform 0.15s ease, fill $transition;
+            }
+            &:hover svg { transform: scale(1.15); fill: #fff; }
+          }
+        }
+      }
+
+      .btn {
+        display: flex !important;
+        @include flex(column, flex-start, flex-start);
+        padding: 0.3rem 1rem 0.85rem;
+        gap: 0.3rem;
+
+        .captiom, .caption {
+          color: #d8d8d8;
+          font-size: 0.87rem;
+          line-height: 1.5;
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes likePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); }
+  70%  { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+
+// ══════════════════════════════════════════════════════
+// RESPONSIVE
+// ══════════════════════════════════════════════════════
+@media (max-width: 900px) {
+  .box {
+    margin-left: 0;
+    padding: 1.5rem 0 6rem;
+
+    .box1 {
+      width: 92vw;
+      gap: 1.5rem;
+      > img { width: 80px; height: 80px; }
+      .user > p { font-size: 1rem; }
+      .follow { gap: 1.5rem; }
+    }
+
+    .btn { width: 92vw; justify-content: flex-start; }
+    .line { width: 92vw; }
+    .user-post { width: 100vw; .posts { gap: 2px; } }
+  }
+
+  .post-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+
+    .post-modal {
+      width: 100vw;
+      max-height: 95vh;
+      border-radius: $radius-md $radius-md 0 0;
+    }
+  }
+
+  .peek-overlay .peek-card {
+    width: min(300px, 85vw);
+  }
+}
+
+@media (max-width: 480px) {
+  .box .box1 {
+    > img { width: 64px; height: 64px; }
+    gap: 1rem;
+  }
 }

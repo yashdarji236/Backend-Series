@@ -29,6 +29,7 @@ async function getpostController(req , res){
   })
   res.status(200).json({
     message:'user message successfully',
+    total:posts.length,
     posts
   })
 
@@ -74,6 +75,20 @@ res.status(200).json({
   like
 })
 
+}
+
+async function GetAllLikes(req,res){
+     const postId = req.params.postid
+     const post = await postModel.findById(postId)
+     if(!post){
+    return res.status(404).json({
+      message:"Post Not Found"
+    })
+  }
+  const likes = await likeModel.find({post})
+  res.status(200).json({
+    message:likes
+  })
 }
 
 async function unLikeController(req,res){
@@ -130,5 +145,6 @@ module.exports = {
   getPostDetails ,
   LikeController ,
   getFeedController , 
-  unLikeController
+  unLikeController ,
+  GetAllLikes
 };

@@ -12,24 +12,27 @@ const Login = () => {
     return <main> <h1>Loading....</h1></main>
   }
 
-    const handleSubmit= async (e)=>{
-        e.preventDefault()
-        const res = await handleLogin(username , password)
-        if (res.success) {
-    navigate('/', {
-      state: {
-        message: `Welcome back ${username} 👋`,
-        userName: username
-      }
-    });
-  } else {
-    // ❌ stay on login page
-    setError(res.message);
-  }
+async function handleForm(e){
+  e.preventDefault()
 
+  try{
+    const res = await handleLogin(username , password)
 
-        
+    if(res.success){
+      navigate('/',{
+        state:{
+          message: `Welcome ${username} 👋`,
+          userName: username
+        }
+      })
+    }else{
+      setError(res.message)
     }
+
+  }catch(err){
+    setError(err.response?.data?.message || "Something went wrong")
+  }
+}
   return (
     <main>
    <div className="box1">
@@ -39,7 +42,7 @@ const Login = () => {
           <img src="https://static.cdninstagram.com/rsrc.php/v4/yt/r/pAv7hjq-51n.png" alt="" />
         </div>
         <div className="box2">
-          <form action="" onSubmit={handleSubmit}>
+          <form action="" onSubmit={handleForm}>
             <i class="ri-instagram-line"></i>
             <h2>Log into Instagram</h2>
             <input 

@@ -19,7 +19,7 @@ postRoute.get('/detail/:postid' , UserIdentify  ,postController.getPostDetails)
 postRoute.post('/like/:postid' , UserIdentify , postController.LikeController  )
 
 postRoute.post('/unlike/:postid' , UserIdentify , postController.unLikeController  )
-
+postRoute.get('/likes/:postid', postController.GetAllLikes)
 postRoute.get('/feed' , UserIdentify , postController.getFeedController )
 
 module.exports = postRoute  
