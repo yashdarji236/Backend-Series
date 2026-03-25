@@ -13,7 +13,7 @@ io.on("connection", (socket) => {
   socket.on('message',(msg)=>{
     console.log("User message is fired");
     console.log(msg);
-    io.emit("abc")
+    io.emit("abc" , msg)
     
   })
   
