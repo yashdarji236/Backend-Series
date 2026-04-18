@@ -7,8 +7,5 @@ const model = new ChatGoogleGenerativeAI({
 
 
 export async function testAi() {
-    model.invoke("What is the price of BMW m4?").then((res)=>{
-            console.log(res.text);
-            
-    })
+   
 }
