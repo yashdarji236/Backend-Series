@@ -70,6 +70,21 @@ export async function LoginController(req,res){
 
 export async function GetmeController(req,res){
     const userId = req.user.id
+    const user = await userModel.findById(userId).select('-password')
+    if(!user){
+        return res.status(404).json({
+            message:"User not found!",
+            success:false,
+            err:"user Not found!"
+        })
+    }
+
+
+    res.status(200).json({
+        message:"User details successfully fetched!",
+        success:false,
+        user 
+    })
 }
 
 
