@@ -6,7 +6,7 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { Sendemail } from './mail.services.js';
 import { ChatMistralAI } from "@langchain/mistralai"
 import * as z from 'zod'
-import { tavily } from '@tavily/core'
+import { tavily } from '@tavily/core'     
 
 
 
