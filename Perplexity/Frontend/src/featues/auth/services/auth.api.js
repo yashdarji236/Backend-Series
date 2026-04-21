@@ -35,7 +35,7 @@ export  const login = async ({ email, password }) => {
 
 export  const Getme = async () => {
     try{
-         const res = await api.get('/api/auth/me');
+         const res = await api.get('/api/auth/get-me');
             return { success: true, data: res.data };
     }catch(err){
         return { success: false, message: err.response?.data?.message || 'Failed to fetch user' };

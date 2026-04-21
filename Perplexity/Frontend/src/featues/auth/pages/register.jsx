@@ -349,7 +349,7 @@ const Register = () => {
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(32,217,210,0.2)'; }}
                 onMouseDown={e => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                Sign In
+                Sign Up
               </button>
             </div>
             </form>
