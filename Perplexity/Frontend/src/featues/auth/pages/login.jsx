@@ -215,30 +215,25 @@ const Login = () => {
   const user = useSelector(state=>state.auth.user)
   const loading = useSelector(state=>state.auth.loading)
 
-
-
   const { loginUser } = useAuth();
   const navigate = useNavigate();
+
+  // Navigate when user is authenticated
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
+
   async function handleLogin(e) {
     e.preventDefault();
     const payload = { email, password };
 
     const res = await loginUser(payload);
-    if (res.success) {
-      navigate('/', {
-        state: {
-          message: `Welcome back 👋`,
-          userEmail: email
-        }
-      });
-    } else {
+    if (!res.success) {
       alert(res.message || 'Login failed');
     }
-  useEffect(() => {
-  if (!loading && user) {
-    navigate('/');
-  }
-}, [user, loading, navigate]);
+    // Navigation will happen automatically via useEffect when Redux state updates
   }
   return (
     <>
