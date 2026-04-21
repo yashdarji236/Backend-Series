@@ -22,10 +22,13 @@ export  const register = async ({ username, email, password }) => {
 
 export  const login = async ({ email, password }) => {
      try{
+      
         const res = await api.post('/api/auth/login', { email, password });
         return { success: true, data: res.data };
      }catch(err){
-        return { success: false, message: err.response?.data?.message || 'Login failed' };
+        console.error('Login error:', err.response?.data);
+        const errorMsg = err.response?.data?.message || 'Invalid email or password';
+        return { success: false, message: errorMsg };
      }
 }
 

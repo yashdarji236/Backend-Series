@@ -47,14 +47,10 @@ export const RegisterController = asyncHandler(async (req, res) => {
     });
   }
 
-  // 3. Hash password before saving
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // 4. Create user
   const user = await userModel.create({
     username,
     email,
-    password: hashedPassword,
+    password,
   });
 
   // 5. Generate email verification token (short-lived)
@@ -109,18 +105,21 @@ export const LoginController = asyncHandler(async (req, res) => {
 
   // 3. Generic message to prevent user enumeration
   if (!user) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Invalid email or password.",
       success: false,
+      errors: [{ field: "email", message: "No account found with this email." }],
     });
   }
 
   // 4. Compare password
-  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  const isPasswordValid = await user.comparePassword(password)
   if (!isPasswordValid) {
-    return res.status(401).json({
+    return res.status(400).json({
       message: "Invalid email or password.",
       success: false,
+      errors: [{ field: "password", message: "Incorrect password." }],
     });
   }
 
@@ -129,6 +128,7 @@ export const LoginController = asyncHandler(async (req, res) => {
     return res.status(403).json({
       message: "Please verify your email before logging in.",
       success: false,
+      errors: [{ field: "email", message: "Email not verified." }],
     });
   }
 

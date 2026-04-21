@@ -74,18 +74,15 @@ const GlobalStyle = () => (
       caret-color: #20d9d2;
     }
 
-    /* Teal icon on focus via group trick */
     .field-wrap:focus-within .field-icon { color: #20d9d2 !important; }
 
-    /* Hide scrollbar on form panel */
     .no-scroll::-webkit-scrollbar { display: none; }
     .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* ── Responsive layout ─────────────────────────────────── */
+    /* ── Root layout ───────────────────────────────────────── */
     .login-root {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr;
       width: 100vw;
       height: 100vh;
       position: fixed;
@@ -93,38 +90,61 @@ const GlobalStyle = () => (
       background: #0a0a0f;
     }
 
-    @media (max-width: 1023px) {
-      .login-root {
-        grid-template-columns: 1fr;
-        grid-template-rows: 40vh 1fr;
-        height: 100dvh;
-      }
-      .image-col { height: 40vh; }
+    /* ── Image column ──────────────────────────────────────── */
+    .image-col {
+      position: relative;
+      overflow: hidden;
     }
 
-    @media (max-width: 767px) {
-      .login-root { grid-template-rows: 34vh 1fr; }
-      .image-col  { height: 34vh; }
-    }
-
-    @media (max-width: 480px) {
-      .login-root { grid-template-rows: 28vh 1fr; }
-      .image-col  { height: 28vh; }
-    }
-
-    .image-col  { position: relative; overflow: hidden; }
-
+    /* ── Form column ───────────────────────────────────────── */
     .form-col {
       background: #0a0a0f;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow-y: auto;
-      padding: clamp(28px, 5vw, 64px) clamp(20px, 6vw, 60px);
+      /* Consistent horizontal padding; vertical handled by flex centering */
+      padding: 40px 48px;
     }
 
+    /* ── Responsive breakpoints ────────────────────────────── */
     @media (max-width: 1023px) {
-      .form-col { align-items: flex-start; }
+      .login-root {
+        grid-template-columns: 1fr;
+        grid-template-rows: 38vh 1fr;
+        height: 100dvh;
+      }
+      .image-col {
+        height: 38vh;
+      }
+      .form-col {
+        align-items: flex-start;
+        padding: 36px 32px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .login-root {
+        grid-template-rows: 32vh 1fr;
+      }
+      .image-col {
+        height: 32vh;
+      }
+      .form-col {
+        padding: 32px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-root {
+        grid-template-rows: 26vh 1fr;
+      }
+      .image-col {
+        height: 26vh;
+      }
+      .form-col {
+        padding: 28px 20px;
+      }
     }
   `}</style>
 );
@@ -133,11 +153,14 @@ const GlobalStyle = () => (
 export const ImagePanel = () => {
   const [current, setCurrent] = useState(0);
   const [vis, setVis] = useState(true);
-  
+
   useEffect(() => {
     const id = setInterval(() => {
       setVis(false);
-      setTimeout(() => { setCurrent(p => (p + 1) % slides.length); setVis(true); }, 500);
+      setTimeout(() => {
+        setCurrent(p => (p + 1) % slides.length);
+        setVis(true);
+      }, 500);
     }, 4500);
     return () => clearInterval(id);
   }, []);
@@ -151,43 +174,82 @@ export const ImagePanel = () => {
   const slide = slides[current];
 
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ background: '#000' }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', background: '#000' }}>
+      {/* Background image */}
       <div
         style={{
           backgroundImage: `url(${slide.url})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           filter: 'brightness(0.6)',
-          width: '100%',
-          height: '100%',
+          position: 'absolute',
+          inset: 0,
           opacity: vis ? 1 : 0.5,
           transition: 'opacity 500ms cubic-bezier(0.22,1,0.36,1)',
         }}
       />
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-center text-white">
-          <h2 className="font-dm text-4xl font-bold mb-2">{slide.mood}</h2>
-          <p className="font-sora text-base opacity-75">{slide.sub}</p>
-        </div>
+
+      {/* Centered text overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 32px',
+          textAlign: 'center',
+        }}
+      >
+        <h2
+          className="font-dm"
+          style={{ color: '#fff', fontSize: 'clamp(28px, 3.5vw, 42px)', fontWeight: 700, marginBottom: '8px' }}
+        >
+          {slide.mood}
+        </h2>
+        <p
+          className="font-sora"
+          style={{ color: 'rgba(255,255,255,0.72)', fontSize: '14px', lineHeight: 1.6 }}
+        >
+          {slide.sub}
+        </p>
       </div>
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+
+      {/* Dot indicators */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '6px',
+          alignItems: 'center',
+        }}
+      >
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
-            className="h-1 rounded-full transition-all"
             style={{
+              height: '4px',
               width: i === current ? '24px' : '8px',
+              borderRadius: '9999px',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
               backgroundColor: i === current ? '#20d9d2' : 'rgba(32,217,210,0.4)',
               transition: 'all 0.3s ease',
-            }} />
+            }}
+          />
         ))}
       </div>
     </div>
   );
 };
 
-/* ─── Verify Email Page ────────────────────────────────────────── */
+/* ─── Verify Email Page ─────────────────────────────────────────── */
 const VerifyEmail = () => {
   const navigate = useNavigate();
 
@@ -204,66 +266,194 @@ const VerifyEmail = () => {
         {/* Form column */}
         <div className="form-col no-scroll">
 
-          {/* Ambient glows */}
-          <div className="absolute pointer-events-none" style={{ top: '-100px', right: '-100px', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(32,217,210,0.055) 0%, transparent 70%)' }} />
-          <div className="absolute pointer-events-none" style={{ bottom: '-80px', left: '-80px', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(32,217,210,0.035) 0%, transparent 70%)' }} />
+          {/* Ambient glows — positioned relative to form-col */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-100px',
+              right: '-100px',
+              width: '380px',
+              height: '380px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(32,217,210,0.055) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-80px',
+              left: '-80px',
+              width: '300px',
+              height: '300px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(32,217,210,0.035) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
 
           {/* Card */}
-          <div className="form-animate relative z-10 w-full" style={{ maxWidth: '400px', textAlign: 'center' }}>
-
-            {/* Brand */}
-            <div className="flex items-center gap-3 mb-9 justify-center">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(32,217,210,0.14), rgba(32,217,210,0.04))', border: '1px solid rgba(32,217,210,0.22)' }}>
+          <div
+            className="form-animate"
+            style={{
+              position: 'relative',
+              zIndex: 10,
+              width: '100%',
+              maxWidth: '400px',
+              textAlign: 'center',
+            }}
+          >
+            {/* ── Brand ── */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                marginBottom: '40px',
+              }}
+            >
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  background: 'linear-gradient(135deg, rgba(32,217,210,0.14), rgba(32,217,210,0.04))',
+                  border: '1px solid rgba(32,217,210,0.22)',
+                }}
+              >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
                   <circle cx="11" cy="11" r="7" stroke="#20d9d2" strokeWidth="2"/>
                   <path d="M20 20l-3-3" stroke="#20d9d2" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-sora text-[17px] font-semibold text-white tracking-[-0.3px]">perplexity</span>
-              </div>
+              <span
+                className="font-sora"
+                style={{ fontSize: '17px', fontWeight: 600, color: '#fff', letterSpacing: '-0.3px' }}
+              >
+                perplexity
+              </span>
             </div>
 
-            {/* Icon */}
-            <div className="mb-8 flex justify-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(32,217,210,0.14), rgba(32,217,210,0.04))', border: '2px solid rgba(32,217,210,0.22)' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 8L10.89 13.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" stroke="#20d9d2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            {/* ── Email icon ── */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '28px',
+              }}
+            >
+              <div
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'linear-gradient(135deg, rgba(32,217,210,0.14), rgba(32,217,210,0.04))',
+                  border: '2px solid rgba(32,217,210,0.22)',
+                }}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M3 8L10.89 13.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"
+                    stroke="#20d9d2"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
             </div>
 
-            {/* Heading */}
-            <h1 className="font-dm text-white mb-3" style={{ fontSize: 'clamp(24px, 2.8vw, 35px)', lineHeight: 1.15 }}>
+            {/* ── Heading ── */}
+            <h1
+              className="font-dm"
+              style={{
+                color: '#fff',
+                fontSize: 'clamp(24px, 2.8vw, 34px)',
+                lineHeight: 1.2,
+                marginBottom: '12px',
+              }}
+            >
               Check Your Email
             </h1>
-            <p className="font-sora text-[13px] font-light mb-8 leading-[1.75]" style={{ color: 'rgba(232,232,240,0.60)' }}>
-              We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.
+
+            {/* ── Subtext ── */}
+            <p
+              className="font-sora"
+              style={{
+                fontSize: '13px',
+                fontWeight: 300,
+                lineHeight: 1.75,
+                color: 'rgba(232,232,240,0.60)',
+                marginBottom: '28px',
+                padding: '0 4px',
+              }}
+            >
+              We've sent a verification link to your email address. Please check your inbox
+              and click the link to verify your account.
             </p>
 
-            <div className="mb-8 p-4 rounded-lg" style={{ background: 'rgba(32,217,210,0.08)', border: '1px solid rgba(32,217,210,0.15)' }}>
-              <p className="font-sora text-[12px]" style={{ color: 'rgba(32,217,210,0.8)' }}>
+            {/* ── Info banner ── */}
+            <div
+              style={{
+                padding: '14px 16px',
+                borderRadius: '10px',
+                background: 'rgba(32,217,210,0.08)',
+                border: '1px solid rgba(32,217,210,0.15)',
+                marginBottom: '28px',
+              }}
+            >
+              <p
+                className="font-sora"
+                style={{ fontSize: '12px', color: 'rgba(32,217,210,0.85)', lineHeight: 1.5 }}
+              >
                 ✓ If you don't see the email, check your spam folder
               </p>
             </div>
 
-            {/* Button */}
+            {/* ── CTA button ── */}
             <button
               onClick={() => navigate('/login')}
-              className="w-full py-3 px-4 rounded-lg font-sora font-semibold text-sm btn-teal transition-all"
+              className="btn-teal"
               style={{
+                width: '100%',
+                padding: '13px 16px',
+                borderRadius: '10px',
+                fontFamily: 'inherit',
+                fontWeight: 600,
+                fontSize: '14px',
+                cursor: 'pointer',
                 background: 'linear-gradient(135deg, rgba(32,217,210,0.2), rgba(32,217,210,0.08))',
                 border: '1px solid rgba(32,217,210,0.4)',
                 color: '#20d9d2',
+                transition: 'all 0.2s ease',
+                marginBottom: '0',
               }}
             >
               Back to Login
             </button>
 
-            {/* Help Text */}
-            <p className="font-sora text-[12px] mt-6" style={{ color: 'rgba(232,232,240,0.38)' }}>
+            {/* ── Resend link ── */}
+            <p
+              className="font-sora"
+              style={{
+                fontSize: '12px',
+                color: 'rgba(232,232,240,0.38)',
+                marginTop: '20px',
+              }}
+            >
               Didn't receive the email?{' '}
-              <Link to="#" className="font-semibold" style={{ color: '#20d9d2' }}>
+              <Link
+                to="#"
+                style={{ fontWeight: 600, color: '#20d9d2', textDecoration: 'none' }}
+              >
                 Resend
               </Link>
             </p>
