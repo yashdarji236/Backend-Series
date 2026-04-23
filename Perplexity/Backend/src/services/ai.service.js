@@ -27,7 +27,7 @@ export async function GeneratetheTitle(message){
       
       user will provide you with first message of conversation and you will generate a title for that conversation. The title should be 2 - 4 words and should be relevant , engaging giving users a quick understanding of the conversation.
       `),
-    new HumanMessage(`Generate a title for first message: ${message}`)
+    new HumanMessage(`Generate a title for first : ${message}`)
     
   ])
 
