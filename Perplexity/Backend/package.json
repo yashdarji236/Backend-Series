@@ -13,6 +13,7 @@
   "type": "module",
   "dependencies": {
     "@langchain/google-genai": "^2.1.27",
+    "@langchain/mistralai": "^1.0.7",
     "@langchain/openai": "^1.4.4",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
