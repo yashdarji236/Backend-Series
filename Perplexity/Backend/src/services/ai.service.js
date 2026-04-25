@@ -16,7 +16,7 @@ export async function GenerateResponce(messages){
   const res = await GeminiModel.invoke(messages.map(msg=>{
     if(msg.role == 'user'){
       return new HumanMessage(msg.content)
-    }else if(msg.role = 'ai'){
+    }else if(msg.role == 'ai'){
       return new AIMessage(msg.content)
     }
   }))
