@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cookieparser())
 app.use(morgan('dev'))
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:["http://localhost:5173", "http://localhost:5174"],
     credentials:true,
     methods:['GET','POST','PUT','DELETE']
 }))
@@ -21,5 +21,23 @@ app.use(cors({
 //Routes
 app.use('/api/auth' , AuthRoute)
 app.use('/api/chats' ,Chatrouter)
+
+// ─── Global Error Handler (MUST be last) ──────────────────────────────────────
+app.use((err, req, res, next) => {
+    console.error('❌ Unhandled Error:', {
+        message: err.message,
+        code: err.code,
+        stack: err.stack
+    });
+
+    const status = err.status || 500;
+    const message = err.message || "Internal Server Error";
+
+    res.status(status).json({
+        success: false,
+        message,
+        error: process.env.NODE_ENV === "development" ? err.message : "Server error"
+    });
+});
 
 export default app
