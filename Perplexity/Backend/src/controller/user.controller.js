@@ -56,8 +56,7 @@ export const RegisterController = asyncHandler(async (req, res) => {
   // 5. Generate email verification token (short-lived)
   const emailVerifyToken = jwt.sign(
     { id: user._id },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
+    process.env.JWT_SECRET
   );
 
   // 6. Send verification email
@@ -140,12 +139,7 @@ export const LoginController = asyncHandler(async (req, res) => {
   );
 
   // 7. Set secure, httpOnly cookie
-  res.cookie("token", token, {
-    httpOnly: true,                                         // not accessible via JS (XSS protection)
-    secure: process.env.NODE_ENV === "production",         // HTTPS only in prod
-    sameSite: "strict",                                    // CSRF protection
-    maxAge: 7 * 24 * 60 * 60 * 1000,                      // 7 days in ms
-  });
+  res.cookie("token", token);
 
   return res.status(200).json({
     message: "Logged in successfully.",
@@ -172,7 +166,7 @@ export const GetmeController = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     message: "User details fetched successfully.",
-    success: true,   // ✅ fixed: was incorrectly set to false
+    success: true,   
     user,
   });
 });

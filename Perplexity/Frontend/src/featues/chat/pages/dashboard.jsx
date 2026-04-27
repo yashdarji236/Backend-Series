@@ -215,9 +215,18 @@ const Dashboard = () => {
                         <span className="text-xs font-bold uppercase tracking-wider opacity-60">Answer</span>
                       </div>
                       <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-black/30 prose-pre:rounded-xl max-w-none text-[#e8e8f0]/90 bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {message.content}
-                        </ReactMarkdown>
+                        <ReactMarkdown
+                    components={{
+                      p: ({ children }) => <p className='mb-2 last:mb-0'>{children}</p>,
+                      ul: ({ children }) => <ul className='mb-2 list-disc pl-5'>{children}</ul>,
+                      ol: ({ children }) => <ol className='mb-2 list-decimal pl-5'>{children}</ol>,
+                      code: ({ children }) => <code className='rounded bg-white/10 px-1 py-0.5'>{children}</code>,
+                      pre: ({ children }) => <pre className='mb-2 overflow-x-auto rounded-xl bg-black/30 p-3'>{children}</pre>
+                    }}
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
                       </div>
                     </div>
                   )}
