@@ -3,6 +3,7 @@ import { HumanMessage, SystemMessage, AIMessage , tool , createAgent} from 'lang
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import * as zod from 'zod'
 import {internetSearch} from './internet.service.js'
+
 const GeminiModel = new ChatGoogleGenerativeAI({
   model: 'gemini-2.5-flash-lite',
   apiKey: process.env.GEMINI_AI_API
@@ -10,7 +11,8 @@ const GeminiModel = new ChatGoogleGenerativeAI({
 
 const MistralModel = new ChatMistralAI({
   model: 'mistral-small-latest',
-  apiKey: process.env.MISTRAL_API_KEY
+  apiKey: process.env.MISTRAL_API_KEY,
+  streaming: true,
 })
 const SearchInternerTool = tool(
   internetSearch,
