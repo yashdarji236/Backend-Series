@@ -1,7 +1,8 @@
 import { ChatMistralAI } from '@langchain/mistralai'
-import {HumanMessage , SystemMessage , AIMessage} from 'langchain'
-import {ChatGoogleGenerativeAI} from '@langchain/google-genai'
-
+import { HumanMessage, SystemMessage, AIMessage , tool , createAgent} from 'langchain'
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
+import * as zod from 'zod'
+import {internetSearch} from './internet.service.js'
 const GeminiModel = new ChatGoogleGenerativeAI({
   model: 'gemini-2.5-flash-lite',
   apiKey: process.env.GEMINI_AI_API
@@ -11,15 +12,28 @@ const MistralModel = new ChatMistralAI({
   model: 'mistral-small-latest',
   apiKey: process.env.MISTRAL_API_KEY
 })
-
-export async function GenerateResponce(messages){
+const SearchInternerTool = tool(
+  internetSearch,
+  {
+    name: 'SearchInternet',
+    description: 'Use this tool to get the latest information about a topic from the internet.',
+    schema: zod.object({
+      query: zod.string().describe('The search query to find information about a topic.'),
+    }),
+  }
+)
+const Agent = createAgent({
+  model: MistralModel,
+  tools: [SearchInternerTool],
+})
+export async function GenerateResponce(messages) {
   try {
     console.log(`🤖 Processing ${messages.length} messages for AI response...`);
-    
+
     // Map and filter messages properly
     const mappedMessages = messages.map(msg => {
       if (!msg || !msg.content) return null;
-      
+
       if (msg.role === 'user') {
         return new HumanMessage(msg.content);
       } else if (msg.role === 'ai') {
@@ -32,23 +46,25 @@ export async function GenerateResponce(messages){
       throw new Error("No valid messages to process");
     }
 
-    console.log(`✅ Converted ${mappedMessages.length} messages for AI`);
-    const res = await GeminiModel.invoke(mappedMessages);
+    console.log(` Converted ${mappedMessages.length} messages for AI`);
+    const res = await Agent.invoke({ messages: [
+      new SystemMessage(`You are a helpful assistant that provides accurate and concise answers to user queries. Use the SearchInternet tool to get the latest information when needed.`),
+      ...mappedMessages
+    ] });
 
-    if (!res || !res.text) {
-      throw new Error("AI returned empty response");
-    }
+if (!res || !res.messages || res.messages.length === 0) {
+  throw new Error("AI returned empty response");
+}             
 
-    console.log(`✅ AI response received (${res.text.length} chars)`);
-    return res.text;
+return res.messages.at(-1)?.content || "No response";
   } catch (error) {
-    console.error('❌ Error in GenerateResponce:', error.message);
+    console.error(' Error in GenerateResponce:', error.message);
     throw error;
   }
 }
 
 
-export async function GeneratetheTitle(message){
+export async function GeneratetheTitle(message) {
   try {
     if (!message || !message.trim()) {
       throw new Error("Message cannot be empty for title generation");

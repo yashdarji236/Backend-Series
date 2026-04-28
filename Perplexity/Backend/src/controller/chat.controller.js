@@ -4,44 +4,53 @@ import messageModel from "../models/message.model.js";
 
 
 export async function SendMessage(req, res) {
-    const { message, chat: chatId } = req.body;
+    try {
+        const { message, chat: chatId } = req.body;
 
+        if (!message || message.trim() === '') {
+            return res.status(400).json({ message: "Message cannot be empty" });
+        }
 
+        let chat = null;
+        let title = null;
+        
+        if (!chatId) {
+            title = await GeneratetheTitle(message);
+            chat = await chatModel.create({
+                user: req.user.id,
+                title
+            });
+        }
 
-    let chat = null;
-    let title = null;
-    if (!chatId) {
-        title = await GeneratetheTitle(message)
-        chat = await chatModel.create({
-            user: req.user.id,
-            title
-        })
+        const userMessage = await messageModel.create({
+            chat: chatId || chat._id,
+            content: message,
+            role: 'user'
+        });
+
+        const messages = await messageModel.find({ chat: chatId || chat._id });
+        const result = await GenerateResponce(messages);
+        console.log(messages);
+
+        const AiMessage = await messageModel.create({
+            chat: chatId || chat._id,
+            content: result,
+            role: 'ai'
+        });
+
+        res.status(201).json({
+            chat,
+            title,
+            userMessage,
+            AiMessage
+        });
+    } catch (error) {
+        console.error('❌ Error in SendMessage:', error.message);
+        res.status(500).json({ 
+            message: "Failed to send message",
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
     }
-    const userMessage = await messageModel.create({
-        chat: chatId || chat._id,
-        content: message,
-        role: 'user'
-    })
-
-
-
-    const messages = await messageModel.find({ chat: chatId || chat._id })
-    const result = await GenerateResponce(messages)
-    console.log(messages);
-
-    const AiMessage = await messageModel.create({
-        chat: chatId || chat._id,
-        content: result,
-        role: 'ai'
-    })
-    res.status(201).json({
-        chat,
-        title,
-        userMessage,
-        AiMessage
-
-    })
-
 }
 
 

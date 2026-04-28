@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
-import ReactMarkdown from 'react-markdown'
 import { useSelector } from 'react-redux'
 import { useChat } from '../hooks/useChat'
+import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 /* ─── Icons ─────────────────────────────────────────────────────── */
@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     chat.initSocketConnection()
-    chat.getChat()
+    chat.handleGetChat()
   }, [])
 
   useEffect(() => {
@@ -143,16 +143,16 @@ const Dashboard = () => {
         <div className="flex-1 mt-8 overflow-y-auto custom-scrollbar">
           <div className="text-[11px] uppercase tracking-widest text-[#e8e8f0]/30 px-3 mb-4">Recently Viewed</div>
           <div className="space-y-1">
-            {Object.values(chats).reverse().map((c) => (
+            {Object.values(chats).reverse().map((chat , index) => (
               <div
-                key={c.id}
-                onClick={() => openChat(c.id)}
+                key={chat.id || index}
+                onClick={() => openChat(chat.id)}
                 className={`
                   px-3 py-1.5 text-sm rounded-lg cursor-pointer transition-all truncate
-                  ${c.id === currentChatId ? 'text-[#20d9d2] bg-[#20d9d2]/10' : 'text-[#e8e8f0]/40 hover:text-[#e8e8f0] hover:bg-white/5'}
+                  ${chat.id === currentChatId ? 'text-[#20d9d2] bg-[#20d9d2]/10' : 'text-[#e8e8f0]/40 hover:text-[#e8e8f0] hover:bg-white/5'}
                 `}
               >
-                {c.title || 'Untitled Chat'}
+                {chat.title || 'Untitled Chat'}
               </div>
             ))}
           </div>
