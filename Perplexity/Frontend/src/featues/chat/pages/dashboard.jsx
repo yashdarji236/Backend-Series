@@ -192,7 +192,7 @@ const Dashboard = () => {
           {!hasMessages ? (
             <div className="flex-1 flex flex-col items-center justify-center -mt-20 text-center max-w-2xl w-full">
               <h1 className="font-['DM_Serif_Display'] text-4xl lg:text-6xl mb-12 tracking-tight">
-                Where knowledge begins
+                {user.username ? `Welcome back, ${user.username}!` : "Welcome to Perplexity!"}
               </h1>
             </div>
           ) : (
