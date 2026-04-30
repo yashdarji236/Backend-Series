@@ -100,7 +100,7 @@ const Dashboard = () => {
   const hasMessages = currentMessages.length > 0
 
   return (
-    <div className="flex h-screen w-screen bg-[#0a0a0f] text-[#e8e8f0] font-['Sora'] overflow-hidden relative">
+    <div className="flex h-screen w-screen bg-[#171615] text-[#e8e8f0] font-['Sora'] overflow-hidden relative">
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
@@ -131,6 +131,13 @@ const Dashboard = () => {
         {/* Navigation */}
         <nav className="space-y-1">
           <div
+            onClick={() => startNewThread()}
+            className="flex items-center gap-3 px-3 py-2.5 text-[#e8e8f0]/40 hover:text-[#e8e8f0] hover:bg-white/5 rounded-lg cursor-pointer transition-all"
+          >
+            <Icons.Plus />
+            <span className="text-sm font-medium">New Chat</span>
+          </div>
+          <div
             onClick={() => { }}
             className="flex items-center gap-3 px-3 py-2.5 text-[#e8e8f0]/40 hover:text-[#e8e8f0] hover:bg-white/5 rounded-lg cursor-pointer transition-all"
           >
@@ -149,7 +156,7 @@ const Dashboard = () => {
                 onClick={() => openChat(chat.id)}
                 className={`
                   px-3 py-1.5 text-sm rounded-lg cursor-pointer transition-all truncate
-                  ${chat.id === currentChatId ? 'text-[#20d9d2] bg-[#20d9d2]/10' : 'text-[#e8e8f0]/40 hover:text-[#e8e8f0] hover:bg-white/5'}
+                  ${chat.id === currentChatId ? 'text-[#6c7272] bg-[#20d9d2]/10' : 'text-[#e8e8f0]/40 hover:text-[#e8e8f0] hover:bg-white/5'}
                 `}
               >
                 {chat.title || 'Untitled Chat'}
@@ -210,11 +217,7 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     <div className="w-full max-w-3xl space-y-4">
-                      <div className="flex items-center gap-2 text-[#20d9d2] mb-2">
-                        <Icons.AI />
-                        <span className="text-xs font-bold uppercase tracking-wider opacity-60">Answer</span>
-                      </div>
-                      <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-black/30 prose-pre:rounded-xl max-w-none text-[#e8e8f0]/90 bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
+                      <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-black/30 prose-pre:rounded-xl max-w-none text-[#e8e8f0]/90   p-6 rounded-3xl">
                         <ReactMarkdown
                     components={{
                       p: ({ children }) => <p className='mb-2 last:mb-0'>{children}</p>,
@@ -237,10 +240,7 @@ const Dashboard = () => {
               {isLoading && (
                 <div className="flex flex-col items-center animate-in fade-in duration-300">
                   <div className="w-full max-w-3xl space-y-4">
-                    <div className="flex items-center gap-2 text-[#20d9d2] mb-2">
-                      <Icons.AI />
-                      <span className="text-xs font-bold uppercase tracking-wider opacity-60">Thinking</span>
-                    </div>
+                   
                     <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl flex gap-1.5 items-center">
                       <div className="w-2 h-2 bg-[#20d9d2]/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <div className="w-2 h-2 bg-[#20d9d2]/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -273,7 +273,7 @@ const Dashboard = () => {
               <button
                 type="submit"
                 disabled={!chatInput.trim()}
-                className="w-8 h-8 bg-[#20d9d2] disabled:bg-[#e8e8f0]/20 rounded-full flex items-center justify-center text-black hover:scale-105 active:scale-95 disabled:scale-100 transition-all shadow-lg"
+                className="w-8 h-8 bg-[#d7e3e2] disabled:bg-[#e8e8f0]/20 rounded-full flex items-center justify-center text-black hover:scale-105 active:scale-95 disabled:scale-100 transition-all shadow-lg"
               >
                 <Icons.Send />
               </button>
@@ -285,7 +285,7 @@ const Dashboard = () => {
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,0,0.05); border-radius: 10px; }
         .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
       `}</style>
     </div>

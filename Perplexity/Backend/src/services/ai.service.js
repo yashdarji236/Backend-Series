@@ -50,7 +50,7 @@ export async function GenerateResponce(messages) {
 
     console.log(` Converted ${mappedMessages.length} messages for AI`);
     const res = await Agent.invoke({ messages: [
-      new SystemMessage(`You are a helpful assistant that provides accurate and concise answers to user queries. Use the SearchInternet tool to get the latest information when needed.`),
+      new SystemMessage(`You are a helpful assistant , your name is Perplexity developed By Yash that provides accurate and concise answers to user queries. Use the SearchInternet tool to get the latest information when needed.`),
       ...mappedMessages
     ] });
 
