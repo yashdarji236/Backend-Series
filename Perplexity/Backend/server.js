@@ -4,11 +4,12 @@ import { initSocket } from './src/sockets/socket.service.js'
 import { Server } from "socket.io";
 import { GenerateResponce } from "./src/services/ai.service.js";
 const server = http.createServer(app)
-initSocket(server)
 const io = new Server(server, {
-  cors: {
-    origin: "*"
-  }
+    cors: {
+        origin: ["http://localhost:5173", "http://localhost:5174"],
+        methods: ["GET", "POST"],
+        credentials: true
+    }
 });
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
