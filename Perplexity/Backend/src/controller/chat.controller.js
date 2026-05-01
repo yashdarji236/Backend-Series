@@ -30,7 +30,7 @@ export async function SendMessage(req, res) {
 
         const messages = await messageModel.find({ chat: chatId || chat._id });
         const result = await GenerateResponce(messages);
-        console.log(messages);
+        
 
         const AiMessage = await messageModel.create({
             chat: chatId || chat._id,
@@ -45,7 +45,7 @@ export async function SendMessage(req, res) {
             AiMessage
         });
     } catch (error) {
-        console.error('❌ Error in SendMessage:', error.message);
+        
         res.status(500).json({ 
             message: "Failed to send message",
             error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'

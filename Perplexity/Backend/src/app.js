@@ -19,8 +19,8 @@ app.use(cors({
 
 
 //Routes
-app.use('/api/auth' , AuthRoute)
-app.use('/api/chats' ,Chatrouter)
+app.use('https://perplexity-72qa.onrender.com/api/auth' , AuthRoute)
+app.use('https://perplexity-72qa.onrender.com/api/chats' ,Chatrouter)
 
 // ─── Global Error Handler (MUST be last) ──────────────────────────────────────
 app.use((err, req, res, next) => {

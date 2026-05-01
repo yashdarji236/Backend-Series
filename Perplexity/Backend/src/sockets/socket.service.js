@@ -10,7 +10,7 @@ export function initSocket(httpServer){
     })
     console.log('Socket.io initialized');
     io.on('connection', (socket) => {
-        console.log('New client connected:', socket.id);
+        console.log('User connected:', socket.id);
 
     });
 }
