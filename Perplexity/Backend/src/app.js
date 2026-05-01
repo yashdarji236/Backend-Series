@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cookieparser())
 app.use(morgan('dev'))
 app.use(cors({
-    origin:["http://localhost:5173", "http://localhost:5174"],
+    origin:["https://backend-series-seven.vercel.app"],
     credentials:true,
     methods:['GET','POST','PUT','DELETE']
 }))
