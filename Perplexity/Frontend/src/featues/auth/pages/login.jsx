@@ -3,13 +3,11 @@ import { Link, Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hook/useAuth';
 import { useSelector } from 'react-redux';
-
 export const slides = [
   { url: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&q=90', mood: 'Ask Anything', sub: 'Real answers, not just links' },
   { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1400&q=90', mood: 'Know Instantly', sub: 'AI-powered search with cited sources' },
   { url: 'https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=1400&q=90', mood: 'Explore Deeper', sub: 'Follow-up questions, no context lost' },
   { url: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1400&q=90', mood: 'Research Smarter', sub: 'Sources verified, ideas synthesized' },
-  { url: 'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=1400&q=90', mood: 'Think Clearly', sub: 'Cut through noise with precision answers' },
 ];
 
 const GlobalStyle = () => (
@@ -122,13 +120,11 @@ export const ImagePanel = () => {
       }} />
 
       <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e8e8f0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-           <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
-           <line x1="12" y1="4" x2="12" y2="20"/>
-           <line x1="4" y1="12" x2="20" y2="12"/>
-        </svg>
-        <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">perplexity</span>
-      </div>
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#e8e8f0" viewBox="0 0 16 16">
+    <path fillRule="evenodd" d="M8 .188a.5.5 0 0 1 .503.5V4.03l3.022-2.92.059-.048a.51.51 0 0 1 .49-.054.5.5 0 0 1 .306.46v3.247h1.117l.1.01a.5.5 0 0 1 .403.49v5.558a.5.5 0 0 1-.503.5H12.38v3.258a.5.5 0 0 1-.312.462.51.51 0 0 1-.55-.11l-3.016-3.018v3.448c0 .275-.225.5-.503.5a.5.5 0 0 1-.503-.5v-3.448l-3.018 3.019a.51.51 0 0 1-.548.11.5.5 0 0 1-.312-.463v-3.258H2.503a.5.5 0 0 1-.503-.5V5.215l.01-.1c.047-.229.25-.4.493-.4H3.62V1.469l.006-.074a.5.5 0 0 1 .302-.387.51.51 0 0 1 .547.102l3.023 2.92V.687c0-.276.225-.5.503-.5M4.626 9.333v3.984l2.87-2.872v-4.01zm3.877 1.113 2.871 2.871V9.333l-2.87-2.897zm3.733-1.668a.5.5 0 0 1 .145.35v1.145h.612V5.715H9.201zm-9.23 1.495h.613V9.13c0-.131.052-.257.145-.35l3.033-3.064h-3.79zm1.62-5.558H6.76L4.626 2.652zm4.613 0h2.134V2.652z"/>
+  </svg>
+  <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">perplexity</span>
+</div>
 
       <div className="absolute z-10" style={{ bottom: '60px', left: '32px', right: '32px', opacity: vis ? 1 : 0, transition: 'opacity 0.5s ease' }}>
         <div className="inline-flex items-center gap-2 mb-3">
@@ -272,7 +268,7 @@ const Login = () => {
                 </button>
               </div>
             </form>
-
+            <br />
             <p className="text-center mt-6 text-[14px]" style={{ color: '#a0a0a0' }}>
               New to Perplexity?{' '}
               <Link to="/register" className="font-medium transition-colors duration-200" style={{ color: '#e8e8f0', textDecoration: 'none' }}
