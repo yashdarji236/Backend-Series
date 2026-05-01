@@ -4,7 +4,9 @@ let io;
 export function initSocket(httpServer){
     io = new Server(httpServer,{
         cors: {
-            origin: ['https://backend-series-seven.vercel.app'],
+            origin: ['https://backend-series-seven.vercel.app',
+                'https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app'
+            ],
             credentials: true
         }
     })
