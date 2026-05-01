@@ -38,11 +38,45 @@ const chatSlice = createSlice({
         },
         setError:(state,action)=>{
             state.error = action.payload
-        }
+        },
+        // In your chatSlice reducers:
+
+setStreaming: (state, action) => {
+  state.streaming = action.payload;
+},
+
+setToolStatus: (state, action) => {
+  state.toolStatus = action.payload; // e.g. "Searching: web_search"
+},
+
+updateStreamChunk: (state, action) => {
+  const { chatId, content } = action.payload;
+  const chat = state.chats[chatId];
+  if (!chat) return;
+  const messages = chat.messages;
+  const last = messages.at(-1);
+  // If last message is an in-progress ai stream, update it
+  if (last?.role === 'ai' && last?.streaming) {
+    last.content = content;
+  } else {
+    messages.push({ role: 'ai', content, streaming: true, id: Date.now() });
+  }
+},
+
+finalizeMessage: (state, action) => {
+  const { chatId, content, role } = action.payload;
+  const messages = state.chats[chatId]?.messages;
+  if (!messages) return;
+  const last = messages.at(-1);
+  if (last?.streaming) {
+    last.content = content;
+    delete last.streaming; // mark as done
+  }
+},
     
     }
 })
 
-export const {setChats,setCurrentChatId,setLoading,setError , createChat , addMessage} = chatSlice.actions
+export const {setChats,setCurrentChatId,setLoading,setError , createChat , addMessage , setStreaming , setToolStatus , updateStreamChunk , finalizeMessage} = chatSlice.actions
 
 export default chatSlice.reducer
