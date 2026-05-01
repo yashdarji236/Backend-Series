@@ -43,7 +43,7 @@ export const useChat = () => {
       for (const word of words) {
         buffer += (buffer ? ' ' : '') + word;
         dispatch(updateStreamChunk({ chatId: resolvedChatId, content: buffer }));
-        await new Promise(res => setTimeout(res, 30)); // ← speed: lower = faster
+        await new Promise(res => setTimeout(res, 50)); 
       }
 
       // Finalize
