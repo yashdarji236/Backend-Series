@@ -139,11 +139,16 @@ export const LoginController = asyncHandler(async (req, res) => {
   );
 
   // 7. Set secure, httpOnly cookie
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   return res.status(200).json({
     message: "Logged in successfully.",
     success: true,
+    token: token,
     user: {
       id: user._id,
       username: user.username,

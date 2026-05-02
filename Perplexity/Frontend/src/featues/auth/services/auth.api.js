@@ -23,8 +23,8 @@ export  const register = async ({ username, email, password }) => {
    try{
      const res =  await api.post('/api/auth/register', { username, email, password });
      // Store token if returned
-     if (res.data?.data?.token) {
-       store.dispatch(setToken(res.data.data.token));
+     if (res.data?.token) {
+       store.dispatch(setToken(res.data.token));
      }
      return { success: true, data: res.data };
    }catch(err){
@@ -52,8 +52,8 @@ export  const login = async ({ email, password }) => {
       
         const res = await api.post('/api/auth/login', { email, password });
         // Store token from login response
-        if (res.data?.data?.token) {
-          store.dispatch(setToken(res.data.data.token));
+        if (res.data?.token) {
+          store.dispatch(setToken(res.data.token));
         }
         return { success: true, data: res.data };
      }catch(err){
