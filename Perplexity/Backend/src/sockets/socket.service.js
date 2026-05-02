@@ -7,6 +7,7 @@ export function initSocket(httpServer){
             origin: ['https://backend-series-seven.vercel.app',
                 'https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app'
             ],
+            methods: ['GET', 'POST'],
             credentials: true
         }
     })
