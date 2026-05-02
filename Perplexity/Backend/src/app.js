@@ -12,10 +12,14 @@ app.use(express.json())
 app.use(cookieparser())
 app.use(morgan('dev'))
 app.use(cors({
-    origin:["https://backend-series-seven.vercel.app"],
-    credentials:true,
-    methods:['GET','POST','PUT','DELETE']
-}))
+  origin: [
+    'https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app',
+    // add your custom domain too if you have one
+  ],
+  credentials: true, // needed if you're sending cookies/auth headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 
 //Routes
