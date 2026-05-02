@@ -62,38 +62,32 @@ export const RegisterController = asyncHandler(async (req, res) => {
   const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
   const verifyLink = `${BASE_URL}/api/auth/verify-email?token=${emailVerifyToken}`;
 
-  try {
-    await Sendemail(
-      email,
-      "Verify your email – Perplexity",
-      `Hi ${username}, please verify your email: ${verifyLink}`,
-      `
-        <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
-          <h2>Welcome to Perplexity, ${username}!</h2>
-          <p>Thanks for signing up. Click the button below to verify your email address.</p>
-          <a href="${verifyLink}"
-             style="display:inline-block;padding:12px 24px;background:#4F46E5;color:#fff;border-radius:6px;text-decoration:none;">
-            Verify Email
-          </a>
-          <p style="margin-top:24px;color:#666;font-size:13px;">
-            This link expires in 24 hours. If you did not create an account, you can safely ignore this email.
-          </p>
-        </div>
-      `
-    );
+  // Run email sending in the background to prevent slow registration (fire-and-forget)
+  Sendemail(
+    email,
+    "Verify your email – Perplexity",
+    `Hi ${username}, please verify your email: ${verifyLink}`,
+    `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
+        <h2>Welcome to Perplexity, ${username}!</h2>
+        <p>Thanks for signing up. Click the button below to verify your email address.</p>
+        <a href="${verifyLink}"
+           style="display:inline-block;padding:12px 24px;background:#4F46E5;color:#fff;border-radius:6px;text-decoration:none;">
+          Verify Email
+        </a>
+        <p style="margin-top:24px;color:#666;font-size:13px;">
+          This link expires in 24 hours. If you did not create an account, you can safely ignore this email.
+        </p>
+      </div>
+    `
+  ).catch(error => {
+    console.error("Background email sending failed during registration:", error.message);
+  });
 
-    return res.status(201).json({
-      message: "Registration successful! Please check your email to verify your account.",
-      success: true,
-    });
-  } catch (error) {
-    console.error("Email sending failed during registration:", error);
-    return res.status(201).json({
-      message: "Registration successful! However, we could not send the verification email. Please try resending it later.",
-      success: true,
-      error: error.message
-    });
-  }
+  return res.status(201).json({
+    message: "Registration successful! Please check your email to verify your account.",
+    success: true,
+  });
 });
 
 // ─── Login ───────────────────────────────────────────────────────────────────
