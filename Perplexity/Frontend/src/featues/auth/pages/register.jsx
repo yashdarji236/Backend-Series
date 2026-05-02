@@ -169,7 +169,10 @@ const Register = () => {
     if (res.success) {
       navigate('/verify'); // Redirect to email verification page
     } else {
-      alert(res.message || 'Registration failed');
+      // Show error in alert with details
+      const errorMsg = res.message || 'Registration failed';
+      console.error('Registration failed:', errorMsg);
+      alert(`Registration Error:\n\n${errorMsg}`);
     }
   }
 

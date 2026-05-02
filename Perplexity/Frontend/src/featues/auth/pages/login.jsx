@@ -176,7 +176,9 @@ const Login = () => {
 
     const res = await loginUser(payload);
     if (!res.success) {
-      alert(res.message || 'Login failed');
+      const errorMsg = res.message || 'Login failed';
+      console.error('Login failed:', errorMsg);
+      alert(`Login Error:\n\n${errorMsg}`);
     }
   }
 

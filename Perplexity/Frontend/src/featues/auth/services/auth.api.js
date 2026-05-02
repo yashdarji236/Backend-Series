@@ -10,13 +10,22 @@ export  const register = async ({ username, email, password }) => {
      const res =  await api.post('/api/auth/register', { username, email, password });
      return { success: true, data: res.data };
    }catch(err){
+     console.error('Registration error:', err.response?.data);
+     
      // Handle validation errors (422)
      if (err.response?.data?.errors) {
        const errorMsg = err.response.data.errors.map(e => e.message).join(', ');
        console.error('Validation errors:', err.response.data.errors);
        return { success: false, message: errorMsg };
      }
-     return { success: false, message: err.response?.data?.message || 'Registration failed' };
+     
+     // Handle specific error types
+     const errorMessage = err.response?.data?.message || 'Registration failed';
+     if (errorMessage.includes('invalid_grant')) {
+       return { success: false, message: `❌ invalid_grant: ${errorMessage}` };
+     }
+     
+     return { success: false, message: errorMessage };
    }
 }
 
@@ -28,6 +37,12 @@ export  const login = async ({ email, password }) => {
      }catch(err){
         console.error('Login error:', err.response?.data);
         const errorMsg = err.response?.data?.message || 'Invalid email or password';
+        
+        // Handle specific error types
+        if (errorMsg.includes('invalid_grant')) {
+          return { success: false, message: `❌ invalid_grant: ${errorMsg}` };
+        }
+        
         return { success: false, message: errorMsg };
      }
 }
