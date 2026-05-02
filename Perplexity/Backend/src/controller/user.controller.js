@@ -11,7 +11,6 @@ const asyncHandler = (fn) => (req, res, next) =>
 export const RegisterController = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
-  // 1. Validate input fields
   if (!username || !email || !password) {
     return res.status(400).json({
       message: "All fields (username, email, password) are required.",
@@ -19,7 +18,6 @@ export const RegisterController = asyncHandler(async (req, res) => {
     });
   }
 
-  // Basic email format check
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({
@@ -35,7 +33,6 @@ export const RegisterController = asyncHandler(async (req, res) => {
     });
   }
 
-  // 2. Check for existing user
   const isUserExist = await userModel.findOne({
     $or: [{ email }, { username }],
   });
@@ -47,28 +44,33 @@ export const RegisterController = asyncHandler(async (req, res) => {
     });
   }
 
+  // ✅ Plain password — model hook handles hashing
   const user = await userModel.create({
     username,
     email,
     password,
   });
 
-  // 5. Generate email verification token (short-lived)
+  // ✅ Token with expiry
   const emailVerifyToken = jwt.sign(
     { id: user._id },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: '24h' }
   );
 
-  // 6. Send verification email
+  // ✅ Dynamic base URL
+  const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const verifyLink = `${BASE_URL}/api/auth/verify-email?token=${emailVerifyToken}`;
+
   await Sendemail(
     email,
     "Verify your email – Perplexity",
-    `Hi ${username},\n\nThank you for registering! Please verify your email using the link sent in this email.\n\nBest regards,\nThe Perplexity Team`,
+    `Hi ${username}, please verify your email: ${verifyLink}`,
     `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
         <h2>Welcome to Perplexity, ${username}!</h2>
         <p>Thanks for signing up. Click the button below to verify your email address.</p>
-        <a href="http://localhost:3000/api/auth/verify-email?token=${emailVerifyToken}"
+        <a href="${verifyLink}"
            style="display:inline-block;padding:12px 24px;background:#4F46E5;color:#fff;border-radius:6px;text-decoration:none;">
           Verify Email
         </a>
@@ -79,10 +81,8 @@ export const RegisterController = asyncHandler(async (req, res) => {
     `
   );
 
-  // 7. Respond — do NOT return the user object or the token here
   return res.status(201).json({
-    message:
-      "Registration successful! Please check your email to verify your account.",
+    message: "Registration successful! Please check your email to verify your account.",
     success: true,
   });
 });
