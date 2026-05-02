@@ -6,7 +6,11 @@ import { GenerateResponce } from "./src/services/ai.service.js";
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:5173", "http://localhost:5174"],
+        origin: [
+            "https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app",
+            "http://localhost:5173",
+            "http://localhost:5174"
+        ],
         methods: ["GET", "POST"],
         credentials: true
     }
