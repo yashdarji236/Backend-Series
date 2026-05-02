@@ -174,7 +174,7 @@ export const GetmeController = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     message: "User details fetched successfully.",
-    success: true,   
+    success: true,
     user,
   });
 });
@@ -199,11 +199,10 @@ export const VerifyEmailController = asyncHandler(async (req, res) => {
     return res.status(400).send(`
       <div style="font-family:sans-serif;text-align:center;padding:60px 20px;">
         <h2>⚠️ ${isExpired ? "Link Expired" : "Invalid Link"}</h2>
-        <p>${
-          isExpired
-            ? "This verification link has expired. Please register again or request a new link."
-            : "This verification link is invalid or has been tampered with."
-        }</p>
+        <p>${isExpired
+        ? "This verification link has expired. Please register again or request a new link."
+        : "This verification link is invalid or has been tampered with."
+      }</p>
         <a href="${process.env.CLIENT_URL}/register"
            style="display:inline-block;margin-top:20px;padding:10px 22px;background:#4F46E5;color:#fff;border-radius:6px;text-decoration:none;">
           Back to Register
@@ -267,45 +266,45 @@ export const LogoutController = asyncHandler(async (req, res) => {
 
 
 export const resendEmail = asyncHandler(async (req, res) => {
-    const { email } = req.body;
+  const { email } = req.body;
 
-    if (!email) {
-        return res.status(400).json({
-            message: "Email is required.",
-            success: false
-        });
-    }
+  if (!email) {
+    return res.status(400).json({
+      message: "Email is required.",
+      success: false
+    });
+  }
 
-    const user = await userModel.findOne({ email });
+  const user = await userModel.findOne({ email });
 
-    // Generic message to prevent email enumeration
-    if (!user) {
-        return res.status(200).json({
-            message: "If that email exists, a verification link has been sent.",
-            success: true
-        });
-    }
+  // Generic message to prevent email enumeration
+  if (!user) {
+    return res.status(200).json({
+      message: "If that email exists, a verification link has been sent.",
+      success: true
+    });
+  }
 
-    if (user.verified) {
-        return res.status(400).json({
-            message: "This email is already verified. Please log in.",
-            success: false
-        });
-    }
+  if (user.verified) {
+    return res.status(400).json({
+      message: "This email is already verified. Please log in.",
+      success: false
+    });
+  }
 
-    // ✅ Correct: verification token, not session token
-    const emailVerifyToken = jwt.sign(
-        { id: user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-    );
+  // ✅ Correct: verification token, not session token
+  const emailVerifyToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
-    try {
-        await Sendemail(
-            email,
-            "Verify your email – Perplexity",
-            `Hi ${user.username},\n\nHere is your new verification link.\n\nBest regards,\nThe Perplexity Team`,
-            `
+  try {
+    await Sendemail(
+      email,
+      "Verify your email – Perplexity",
+      `Hi ${user.username},\n\nHere is your new verification link.\n\nBest regards,\nThe Perplexity Team`,
+      `
             <div style="font-family:sans-serif;max-width:600px;margin:auto;">
                 <h2>Hi ${user.username},</h2>
                 <p>Click the button below to verify your email address. This link expires in 24 hours.</p>
@@ -318,18 +317,18 @@ export const resendEmail = asyncHandler(async (req, res) => {
                 </p>
             </div>
             `
-        );
+    );
 
-        return res.status(200).json({
-            message: "If that email exists, a verification link has been sent.",
-            success: true
-        });
-    } catch (error) {
-        console.error("Failed to resend email:", error);
-        return res.status(500).json({
-            message: "Failed to send verification email. Please check your email configuration.",
-            success: false,
-            error: error.message
-        });
-    }
+    return res.status(200).json({
+      message: "If that email exists, a verification link has been sent.",
+      success: true
+    });
+  } catch (error) {
+    console.error("Failed to resend email:", error);
+    return res.status(500).json({
+      message: "Failed to send verification email. Please check your email configuration.",
+      success: false,
+      error: error.message
+    });
+  }
 });
