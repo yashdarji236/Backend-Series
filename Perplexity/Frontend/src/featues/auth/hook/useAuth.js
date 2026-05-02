@@ -51,6 +51,4 @@ export function useAuth(){
         }
     }
     return {registerUser , loginUser , fetchCurrentUser}
-} 
-
-
+}

@@ -1,13 +1,31 @@
 import axios from 'axios';
+import { store } from '../../../app.store';
+import { setToken } from '../auth.slice';
 
 const api = axios.create({
     baseURL: 'https://perplexity-72qa.onrender.com',
     withCredentials: true,
 })
 
+// Add token to all auth requests
+api.interceptors.request.use(
+    (config) => {
+        const token = store.getState().auth.token;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 export  const register = async ({ username, email, password }) => {
    try{
      const res =  await api.post('/api/auth/register', { username, email, password });
+     // Store token if returned
+     if (res.data?.data?.token) {
+       store.dispatch(setToken(res.data.data.token));
+     }
      return { success: true, data: res.data };
    }catch(err){
      console.error('Registration error:', err.response?.data);
@@ -33,6 +51,10 @@ export  const login = async ({ email, password }) => {
      try{
       
         const res = await api.post('/api/auth/login', { email, password });
+        // Store token from login response
+        if (res.data?.data?.token) {
+          store.dispatch(setToken(res.data.data.token));
+        }
         return { success: true, data: res.data };
      }catch(err){
         console.error('Login error:', err.response?.data);

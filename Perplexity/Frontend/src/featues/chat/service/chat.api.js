@@ -6,6 +6,30 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Add token to all chat API requests
+api.interceptors.request.use(
+  (config) => {
+    const token = store.getState().auth.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Handle 401 responses
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.error('Unauthorized: Token may be expired or invalid');
+      localStorage.removeItem('authToken');
+    }
+    return Promise.reject(error);
+  }
+);
+
 
 export const sendMessage = async (message, chatId) => {
     try {
