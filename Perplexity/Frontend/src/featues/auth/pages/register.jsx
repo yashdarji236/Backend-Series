@@ -159,6 +159,7 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
   const { registerUser } = useAuth();
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
@@ -172,13 +173,11 @@ const Register = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
     const payload = { username, email, password };
     const res = await registerUser(payload);
     if (!res.success) {
-      // Show error in alert with details
-      const errorMsg = res.message || 'Registration failed';
-      console.error('Registration failed:', errorMsg);
-      alert(`Registration Error:\n\n${errorMsg}`);
+      setError(res.message || 'Registration failed');
     }
   }
 
@@ -200,6 +199,13 @@ const Register = () => {
             <p className="text-[14px] mb-7 leading-[1.75]" style={{ color: '#a0a0a0' }}>
               Create an account to get started.
             </p>
+
+            {error && (
+              <div className="mb-6 p-3 rounded-xl bg-[#ff4a4a]/10 border border-[#ff4a4a]/20 text-[#ff4a4a] text-[13px] flex items-center gap-3 form-animate">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span className="flex-1">{error}</span>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
