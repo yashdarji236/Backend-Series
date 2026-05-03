@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hook/useAuth';
+import { useSelector } from 'react-redux';
 
 export const slides = [
   { url: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&q=90', mood: 'Ask Anything', sub: 'Real answers, not just links' },
@@ -161,14 +161,20 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const { registerUser } = useAuth();
   const navigate = useNavigate();
+  const user = useSelector(state => state.auth.user);
+  const loading = useSelector(state => state.auth.loading);
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     const payload = { username, email, password };
     const res = await registerUser(payload);
-    if (res.success) {
-      navigate('/verify'); // Redirect to email verification page
-    } else {
+    if (!res.success) {
       // Show error in alert with details
       const errorMsg = res.message || 'Registration failed';
       console.error('Registration failed:', errorMsg);

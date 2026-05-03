@@ -1,7 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { Sendemail } from "../services/mail.services.js";
 
 // ─── Async Error Wrapper ────────────────────────────────────────────────────
 const asyncHandler = (fn) => (req, res, next) =>
@@ -51,42 +50,29 @@ export const RegisterController = asyncHandler(async (req, res) => {
     password,
   });
 
-  // ✅ Token with expiry
-  const emailVerifyToken = jwt.sign(
-    { id: user._id },
+  // 6. Sign session token
+  const token = jwt.sign(
+    { id: user._id, username: user.username },
     process.env.JWT_SECRET,
-    { expiresIn: '24h' }
+    { expiresIn: "7d" }
   );
 
-  // ✅ Dynamic base URL
-  const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
-  const verifyLink = `${BASE_URL}/api/auth/verify-email?token=${emailVerifyToken}`;
-
-  // Run email sending in the background to prevent slow registration (fire-and-forget)
-  Sendemail(
-    email,
-    "Verify your email – Perplexity",
-    `Hi ${username}, please verify your email: ${verifyLink}`,
-    `
-      <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
-        <h2>Welcome to Perplexity, ${username}!</h2>
-        <p>Thanks for signing up. Click the button below to verify your email address.</p>
-        <a href="${verifyLink}"
-           style="display:inline-block;padding:12px 24px;background:#4F46E5;color:#fff;border-radius:6px;text-decoration:none;">
-          Verify Email
-        </a>
-        <p style="margin-top:24px;color:#666;font-size:13px;">
-          This link expires in 24 hours. If you did not create an account, you can safely ignore this email.
-        </p>
-      </div>
-    `
-  ).catch(error => {
-    console.error("Background email sending failed during registration:", error.message);
+  // 7. Set secure, httpOnly cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
   });
 
   return res.status(201).json({
-    message: "Registration successful! Please check your email to verify your account.",
+    message: "Registration successful!",
     success: true,
+    token: token,
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    },
   });
 });
 
@@ -122,15 +108,6 @@ export const LoginController = asyncHandler(async (req, res) => {
       message: "Invalid email or password.",
       success: false,
       errors: [{ field: "password", message: "Incorrect password." }],
-    });
-  }
-
-  // 5. Check email verification
-  if (!user.verified) {
-    return res.status(403).json({
-      message: "Please verify your email before logging in.",
-      success: false,
-      errors: [{ field: "email", message: "Email not verified." }],
     });
   }
 
