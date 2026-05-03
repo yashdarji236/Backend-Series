@@ -3,7 +3,7 @@ import { store } from '../../../app.store';
 import { setToken } from '../auth.slice';
 
 const api = axios.create({
-  baseURL: 'https://backend-series-seven.vercel.app',
+  baseURL: 'https://perplexity-72qa.onrender.com',
   withCredentials: true,
 })
 
