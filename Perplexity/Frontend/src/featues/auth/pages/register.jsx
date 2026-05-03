@@ -165,17 +165,13 @@ const Register = () => {
   const user = useSelector(state => state.auth.user);
   const loading = useSelector(state => state.auth.loading);
 
-  // We will handle redirect imperatively after successful registration
-
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
     const payload = { username, email, password };
-    const res = await registerUser(payload);
-    if (!res.success) {
-      setError(res.message || 'Registration failed');
-    } else {
-      window.location.href = '/';
+    await registerUser(payload);
+    if (!loading && user) {
+      navigate('/');
     }
   }
 
