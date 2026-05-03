@@ -43,7 +43,7 @@ export function useAuth() {
             dispatch(setLoading(true))
             const data = await Getme()
             if (data.success) {
-                dispatch(setUser(data.user))
+                dispatch(setUser(data.data.user))
             }
             return data
         } catch (err) {

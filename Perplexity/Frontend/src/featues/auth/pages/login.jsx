@@ -165,11 +165,7 @@ const Login = () => {
   const { loginUser } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/'); // Go to dashboard
-    }
-  }, [user, loading, navigate]);
+  // We will handle redirect imperatively after successful login
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -179,6 +175,8 @@ const Login = () => {
     const res = await loginUser(payload);
     if (!res.success) {
       setError(res.message || 'Login failed');
+    } else {
+      navigate('/');
     }
   }
 

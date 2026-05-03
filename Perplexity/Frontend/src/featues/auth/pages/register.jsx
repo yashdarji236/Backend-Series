@@ -165,11 +165,7 @@ const Register = () => {
   const user = useSelector(state => state.auth.user);
   const loading = useSelector(state => state.auth.loading);
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/'); // Go to dashboard
-    }
-  }, [user, loading, navigate]);
+  // We will handle redirect imperatively after successful registration
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -178,6 +174,8 @@ const Register = () => {
     const res = await registerUser(payload);
     if (!res.success) {
       setError(res.message || 'Registration failed');
+    } else {
+      navigate('/');
     }
   }
 
