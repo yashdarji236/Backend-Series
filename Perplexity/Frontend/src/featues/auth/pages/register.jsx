@@ -170,10 +170,13 @@ const Register = () => {
     setError(null);
     const payload = { username, email, password };
     await registerUser(payload);
-    if (!loading && user) {
-      navigate('/');
-    }
   }
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, loading, navigate]);
 
   return (
     <>
