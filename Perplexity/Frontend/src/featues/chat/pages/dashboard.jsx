@@ -331,8 +331,24 @@ const Dashboard = () => {
                             p: ({ children }) => <p className='mb-4 last:mb-0'>{children}</p>,
                             ul: ({ children }) => <ul className='mb-4 list-disc pl-5'>{children}</ul>,
                             ol: ({ children }) => <ol className='mb-4 list-decimal pl-5'>{children}</ol>,
-                            code: ({ children }) => <code className='rounded bg-[#303232] px-1.5 py-0.5 text-sm'>{children}</code>,
-                            pre: ({ children }) => <pre className='mb-4 overflow-x-auto rounded-xl bg-[#202222] p-4 border border-[#404040]'>{children}</pre>
+                            code: ({ children }) => <code className='rounded bg-[#303232] px-1.5 py-0.5 text-sm font-mono'>{children}</code>,
+                            pre: ({ children }) => <pre className='mb-4 overflow-x-auto rounded-xl bg-[#202222] p-4 border border-[#404040]'>{children}</pre>,
+                            table: ({ children }) => (
+                              <div className="overflow-x-auto mb-6 mt-2 rounded-lg border border-[#404040]">
+                                <table className="w-full border-collapse text-sm text-left">
+                                  {children}
+                                </table>
+                              </div>
+                            ),
+                            thead: ({ children }) => <thead className="bg-[#303232] text-[#e8e8f0] uppercase text-xs">{children}</thead>,
+                            tbody: ({ children }) => <tbody className="divide-y divide-[#404040]">{children}</tbody>,
+                            tr: ({ children }) => <tr className="hover:bg-[#202222] transition-colors">{children}</tr>,
+                            th: ({ children }) => <th className="px-5 py-4 font-semibold tracking-wider border-b border-[#404040]">{children}</th>,
+                            td: ({ children }) => <td className="px-5 py-4 text-[#d0d0d0] leading-relaxed border-b border-[#404040] last:border-0">{children}</td>,
+                            h1: ({ children }) => <h1 className="text-2xl font-bold mb-4 mt-6 text-[#e8e8f0] border-b border-[#404040] pb-2">{children}</h1>,
+                            h2: ({ children }) => <h2 className="text-xl font-bold mb-3 mt-5 text-[#e8e8f0] border-b border-[#404040] pb-2">{children}</h2>,
+                            h3: ({ children }) => <h3 className="text-lg font-bold mb-2 mt-4 text-[#e8e8f0]">{children}</h3>,
+                            blockquote: ({ children }) => <blockquote className="border-l-4 border-[#606060] pl-4 py-1 italic mb-4 text-[#a0a0a0] bg-[#202222] rounded-r-lg">{children}</blockquote>,
                           }}
                           remarkPlugins={[remarkGfm]}
                         >
