@@ -3,17 +3,18 @@ import http from 'http'
 import { initSocket } from './src/sockets/socket.service.js'
 import { Server } from "socket.io";
 import { GenerateResponce } from "./src/services/ai.service.js";
+
 const server = http.createServer(app)
 const io = new Server(server, {
-    cors: {
-        origin: [
-            "https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app",
-            "http://localhost:5173",
-            "http://localhost:5174"
-        ],
-        methods: ["GET", "POST"],
-        credentials: true
-    }
+  cors: {
+    origin: [
+      "https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:5174"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
@@ -32,7 +33,7 @@ io.on("connection", (socket) => {
 });
 
 
-server.listen(3000,()=>{
-    console.log("Server is Running");
-    
+server.listen(3000, () => {
+  console.log("Server is Running");
+
 })

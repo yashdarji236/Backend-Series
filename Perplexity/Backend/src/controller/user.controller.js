@@ -137,6 +137,31 @@ export const LoginController = asyncHandler(async (req, res) => {
   });
 });
 
+// ─── Google Auth Callback ──────────────────────────────────────────────────────
+import { generateAuthToken } from "../services/auth.services.js";
+
+export const GoogleCallbackController = asyncHandler(async (req, res) => {
+  // req.user is set by Passport after successful Google Auth
+  const user = req.user;
+
+  if (!user) {
+    return res.redirect(`${process.env.CLIENT_URL}/login?error=GoogleAuthFailed`);
+  }
+
+  // Token Generation via Service Layer
+  const token = generateAuthToken(user);
+
+  // Set secure, httpOnly cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+
+  // Redirect back to frontend
+  return res.redirect(`${process.env.CLIENT_URL}/`);
+});
+
 // ─── Get Me ──────────────────────────────────────────────────────────────────
 export const GetmeController = asyncHandler(async (req, res) => {
   // req.user.id is set by your auth middleware after verifying the cookie/token
