@@ -166,7 +166,7 @@ const Login = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate('/');
+      navigate('/'); // Go to dashboard
     }
   }, [user, loading, navigate]);
 
