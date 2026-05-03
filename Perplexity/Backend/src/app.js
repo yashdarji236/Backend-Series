@@ -4,8 +4,6 @@ import cookieparser from 'cookie-parser'
 import AuthRoute from './Router/auth.router.js'
 import cors from 'cors'
 import morgan from 'morgan'
-import passport from 'passport'
-import './config/passport.js'
 import Chatrouter from './Router/chat.router.js'
 const app = express()
 DataBase()
@@ -13,7 +11,6 @@ DataBase()
 app.use(express.json())
 app.use(cookieparser())
 app.use(morgan('dev'))
-app.use(passport.initialize())
 app.use(cors({
   origin: [
     'https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app',
