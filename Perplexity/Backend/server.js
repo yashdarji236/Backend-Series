@@ -9,6 +9,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       "https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app",
+      "https://backend-series-seven.vercel.app",
       "http://localhost:5173",
       "http://localhost:5174"
     ],

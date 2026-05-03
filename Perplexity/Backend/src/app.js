@@ -14,6 +14,7 @@ app.use(morgan('dev'))
 app.use(cors({
   origin: [
     'https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app',
+    'https://backend-series-seven.vercel.app'
     // add your custom domain too if you have one
   ],
   credentials: true, // needed if you're sending cookies/auth headers
@@ -23,25 +24,25 @@ app.use(cors({
 
 
 //Routes
-app.use('/api/auth' , AuthRoute)
-app.use('/api/chats' ,Chatrouter)
+app.use('/api/auth', AuthRoute)
+app.use('/api/chats', Chatrouter)
 
 // ─── Global Error Handler (MUST be last) ──────────────────────────────────────
 app.use((err, req, res, next) => {
-    console.error('❌ Unhandled Error:', {
-        message: err.message,
-        code: err.code,
-        stack: err.stack
-    });
+  console.error('❌ Unhandled Error:', {
+    message: err.message,
+    code: err.code,
+    stack: err.stack
+  });
 
-    const status = err.status || 500;
-    const message = err.message || "Internal Server Error";
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
 
-    res.status(status).json({
-        success: false,
-        message,
-        error: process.env.NODE_ENV === "development" ? err.message : "Server error"
-    });
+  res.status(status).json({
+    success: false,
+    message,
+    error: process.env.NODE_ENV === "development" ? err.message : "Server error"
+  });
 });
 
 export default app
