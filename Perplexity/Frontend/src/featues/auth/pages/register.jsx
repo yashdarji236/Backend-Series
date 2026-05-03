@@ -168,7 +168,7 @@ const Register = () => {
     if (!loading && user) {
       navigate('/'); // Go to dashboard
     }
-  }, []);
+  }, [user, loading, navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();
