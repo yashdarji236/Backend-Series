@@ -53,5 +53,21 @@ export function useAuth() {
             dispatch(setLoading(false))
         }
     }
-    return { registerUser, loginUser, fetchCurrentUser }
+    async function logoutUser() {
+        try {
+            dispatch(setLoading(true))
+            const data = await Logout()
+            if (data.success) {
+                dispatch(setUser(null))
+            }
+            return data
+        } catch (err) {
+            dispatch(setError(err.message ? err.message : 'Failed to logout'))
+            return { success: false, message: err.message || 'Failed to logout' }
+        }
+        finally {
+            dispatch(setLoading(false))
+        }
+    }
+    return { registerUser, loginUser, fetchCurrentUser, logoutUser }
 }

@@ -78,3 +78,11 @@ export const Getme = async () => {
     return { success: false, message: err.response?.data?.message || 'Failed to fetch user' };
   }
 }
+export const Logout = async () => {
+  try {
+    const res = await api.delete('/api/auth/logout');
+    return { success: true, data: res.data };
+  } catch (err) {
+    return { success: false, message: err.response?.data?.message || 'Failed to logout' };
+  }
+}
