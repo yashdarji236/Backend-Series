@@ -11,7 +11,7 @@ export function useAuth() {
             dispatch(setLoading(true))
             const data = await register({ username, email, password })
             if (data.success) {
-                dispatch(setUser(data.user))
+                dispatch(setUser(data.data.user))
             }
             return data
 
@@ -28,7 +28,7 @@ export function useAuth() {
             dispatch(setLoading(true))
             const data = await login({ email, password })
             if (data.success) {
-                dispatch(setUser(data.user))
+                dispatch(setUser(data.data.user))
             }
             return data
         } catch (err) {
