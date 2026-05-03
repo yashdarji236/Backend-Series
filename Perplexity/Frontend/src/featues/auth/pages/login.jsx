@@ -176,7 +176,7 @@ const Login = () => {
     if (!res.success) {
       setError(res.message || 'Login failed');
     } else {
-      navigate('/');
+      window.location.href = '/';
     }
   }
 

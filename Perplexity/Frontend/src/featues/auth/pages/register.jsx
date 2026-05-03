@@ -175,7 +175,7 @@ const Register = () => {
     if (!res.success) {
       setError(res.message || 'Registration failed');
     } else {
-      navigate('/');
+      window.location.href = '/';
     }
   }
 
