@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { SendMessage , GetChat , GetMessages, DeleteChat} from '../controller/chat.controller.js';
+import { SendMessage , GetChat , GetMessages, DeleteChat ,StreamMessage } from '../controller/chat.controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 const router = Router()
 router.post('/message' , authMiddleware  , SendMessage )
