@@ -172,9 +172,11 @@ const Login = () => {
     setError(null);
     const payload = { email, password };
 
-    await loginUser(payload);
-    if (!loading && user) {
+    const response = await loginUser(payload);
+    if (response?.success) {
       navigate('/');
+    } else {
+      setError(response?.message || 'Login failed');
     }
   }
 

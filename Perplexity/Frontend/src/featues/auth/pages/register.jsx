@@ -172,6 +172,8 @@ const Register = () => {
     const response = await registerUser(payload);
     if (response?.success) {
       navigate('/', { replace: true });
+    } else {
+      setError(response?.message || 'Registration failed');
     }
   }
 

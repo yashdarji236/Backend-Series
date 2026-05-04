@@ -30,10 +30,18 @@ export const register = async ({ username, email, password }) => {
   } catch (err) {
     console.error('Registration error:', err.response?.data);
 
-    // Handle validation errors (422)
-    if (err.response?.data?.errors) {
-      const errorMsg = err.response.data.errors.map(e => e.message).join(', ');
+    // Handle validation errors (422 - from Day-32 validator)
+    if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+      const errorMsg = err.response.data.errors.map(e => e.message).join(' | ');
       console.error('Validation errors:', err.response.data.errors);
+      return { success: false, message: errorMsg };
+    }
+
+    // Handle validation errors (400 - from Day-30 validator)
+    if (err.response?.status === 400 && err.response?.data?.error) {
+      const errorMsg = Array.isArray(err.response.data.error)
+        ? err.response.data.error.map(e => e.msg).join(' | ')
+        : 'Validation error';
       return { success: false, message: errorMsg };
     }
 
@@ -58,6 +66,21 @@ export const login = async ({ email, password }) => {
     return { success: true, data: res.data };
   } catch (err) {
     console.error('Login error:', err.response?.data);
+
+    // Handle validation errors (422 - from Day-32 validator)
+    if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+      const errorMsg = err.response.data.errors.map(e => e.message).join(' | ');
+      return { success: false, message: errorMsg };
+    }
+
+    // Handle validation errors (400 - from Day-30 validator)
+    if (err.response?.status === 400 && err.response?.data?.error) {
+      const errorMsg = Array.isArray(err.response.data.error)
+        ? err.response.data.error.map(e => e.msg).join(' | ')
+        : 'Validation error';
+      return { success: false, message: errorMsg };
+    }
+
     const errorMsg = err.response?.data?.message || 'Invalid email or password';
 
     // Handle specific error types
