@@ -8,7 +8,8 @@ import { internetSearch } from './internet.service.js'
 const MistralModel = new ChatMistralAI({
   model: 'mistral-small-latest',
   apiKey: process.env.MISTRAL_API_KEY,
-  streaming: true, // ✅ Keep streaming true on the model
+  streaming: true,
+  maxToolCallRoundtrips: 1, // ✅ Keep streaming true on the model
 })
 
 const SearchInternetTool = tool(
@@ -36,10 +37,11 @@ const SYSTEM_PROMPT = `You are a helpful assistant named Perplexity developed by
 Today's date is ${new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}.
 
 STRICT RULES:
-- Use the SearchInternet tool MAXIMUM 1 time per response
-- After getting search results, immediately answer the user — do NOT search again
-- Never say "I cannot access real-time data" — use the tool instead
-- Be concise and accurate`
+- Call SearchInternet tool MAXIMUM ONCE per response, then stop and answer
+- After receiving search results, you MUST write your final answer immediately
+- NEVER call the search tool a second time
+- NEVER call any tool after receiving results
+- Just answer directly using what you already know or one search`
 
 // ✅ Streaming version — pass a callback that receives each chunk
 export async function GenerateResponceStream(messages, onChunk) {
