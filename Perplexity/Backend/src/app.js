@@ -14,7 +14,9 @@ app.use(morgan('dev'))
 app.use(cors({
   origin: [
     'https://backend-series-git-main-yashdarji5237-1754s-projects.vercel.app',
-    'https://backend-series-seven.vercel.app'
+    'https://backend-series-seven.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:5174' // add your frontend local development URL
     // add your custom domain too if you have one
   ],
   credentials: true, // needed if you're sending cookies/auth headers
