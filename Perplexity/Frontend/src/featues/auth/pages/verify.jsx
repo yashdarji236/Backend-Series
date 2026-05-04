@@ -125,7 +125,7 @@ export const ImagePanel = () => {
            <line x1="12" y1="4" x2="12" y2="20"/>
            <line x1="4" y1="12" x2="20" y2="12"/>
         </svg>
-        <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">perplexity</span>
+        <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">asknova</span>
       </div>
 
       <div className="absolute z-10" style={{ bottom: '60px', left: '32px', right: '32px', opacity: vis ? 1 : 0, transition: 'opacity 0.5s ease' }}>

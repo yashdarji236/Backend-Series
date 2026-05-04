@@ -27,7 +27,7 @@ const Preloader = ({ onComplete }) => {
 
   return (
     <div className="fixed inset-0 z-[9999] bg-[#000000] flex items-center justify-center" style={{ overflow: 'hidden' }}>
-      {/* Center Perplexity Logo */}
+      {/* Center AskNova Logo */}
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         width="64" 
