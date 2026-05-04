@@ -29,9 +29,17 @@ const Agent = createReactAgent({
   llm: MistralModel,
   tools: [SearchInternetTool],
 })
-
+const agentConfig = {
+  recursionLimit: 10  // max 10 steps total
+}
 const SYSTEM_PROMPT = `You are a helpful assistant named Perplexity developed by Yash.
-Provide accurate and concise answers. Use the SearchInternet tool to get the latest information when needed.`
+Today's date is ${new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}.
+
+STRICT RULES:
+- Use the SearchInternet tool MAXIMUM 1 time per response
+- After getting search results, immediately answer the user — do NOT search again
+- Never say "I cannot access real-time data" — use the tool instead
+- Be concise and accurate`
 
 // ✅ Streaming version — pass a callback that receives each chunk
 export async function GenerateResponceStream(messages, onChunk) {
@@ -52,7 +60,8 @@ export async function GenerateResponceStream(messages, onChunk) {
         messages: [new SystemMessage(SYSTEM_PROMPT), ...mappedMessages]
       },
       {
-        streamMode: 'messages' // ✅ This streams token-by-token chunks
+        streamMode: 'messages' ,
+        recursionLimit: 10 // ✅ This streams token-by-token chunks
       }
     )
 
