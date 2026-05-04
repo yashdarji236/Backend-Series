@@ -1,21 +1,21 @@
 import { ChatMistralAI } from '@langchain/mistralai'
-import { HumanMessage, SystemMessage, AIMessage , tool , createAgent} from 'langchain'
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
+import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages'
+import { tool } from '@langchain/core/tools'
+import { createReactAgent } from '@langchain/langgraph/prebuilt'
 import * as zod from 'zod'
-import {internetSearch} from './internet.service.js'
-
-const GeminiModel = new ChatGoogleGenerativeAI({
-  model: 'gemini-2.5-flash-lite',
-  apiKey: process.env.GEMINI_AI_API
-})
+import { internetSearch } from './internet.service.js'
 
 const MistralModel = new ChatMistralAI({
   model: 'mistral-small-latest',
   apiKey: process.env.MISTRAL_API_KEY,
-  streaming: true,
+  streaming: true, // ✅ Keep streaming true on the model
 })
-const SearchInternerTool = tool(
-  internetSearch,
+
+const SearchInternetTool = tool(
+  async ({ query }) => {
+    const result = await internetSearch(query)
+    return typeof result === 'string' ? result : JSON.stringify(result)
+  },
   {
     name: 'SearchInternet',
     description: 'Use this tool to get the latest information about a topic from the internet.',
@@ -24,70 +24,93 @@ const SearchInternerTool = tool(
     }),
   }
 )
-const Agent = createAgent({
-  model: MistralModel,
-  tools: [SearchInternerTool],
+
+const Agent = createReactAgent({
+  llm: MistralModel,
+  tools: [SearchInternetTool],
 })
-export async function GenerateResponce(messages) {
+
+const SYSTEM_PROMPT = `You are a helpful assistant named Perplexity developed by Yash.
+Provide accurate and concise answers. Use the SearchInternet tool to get the latest information when needed.`
+
+// ✅ Streaming version — pass a callback that receives each chunk
+export async function GenerateResponceStream(messages, onChunk) {
   try {
-    console.log(`🤖 Processing ${messages.length} messages for AI response...`);
+    console.log(`🤖 Streaming response for ${messages.length} messages...`)
 
-    // Map and filter messages properly
     const mappedMessages = messages.map(msg => {
-      if (!msg || !msg.content) return null;
+      if (!msg?.content) return null
+      if (msg.role === 'user') return new HumanMessage(msg.content)
+      if (msg.role === 'ai') return new AIMessage(msg.content)
+      return null
+    }).filter(Boolean)
 
-      if (msg.role === 'user') {
-        return new HumanMessage(msg.content);
-      } else if (msg.role === 'ai') {
-        return new AIMessage(msg.content);
+    if (mappedMessages.length === 0) throw new Error("No valid messages to process")
+
+    const stream = await Agent.stream(
+      {
+        messages: [new SystemMessage(SYSTEM_PROMPT), ...mappedMessages]
+      },
+      {
+        streamMode: 'messages' // ✅ This streams token-by-token chunks
       }
-      return null;
-    }).filter(msg => msg !== null);
+    )
 
-    if (mappedMessages.length === 0) {
-      throw new Error("No valid messages to process");
+    let fullContent = ''
+
+    for await (const [chunk, metadata] of stream) {
+      // Filter only final AI response chunks, skip tool call chunks
+      const isAIChunk = chunk?.constructor?.name === 'AIMessageChunk'
+      const isFinalNode = metadata?.langgraph_node === 'agent'
+      const hasText = typeof chunk?.content === 'string' && chunk.content.length > 0
+
+      if (isAIChunk && isFinalNode && hasText && !chunk?.tool_call_chunks?.length) {
+        fullContent += chunk.content
+        onChunk(chunk.content) // 🔁 Send each token to caller
+      }
     }
 
-    console.log(` Converted ${mappedMessages.length} messages for AI`);
-    const res = await Agent.invoke({ messages: [
-      new SystemMessage(`You are a helpful assistant , your name is Perplexity developed By Yash that provides accurate and concise answers to user queries. Use the SearchInternet tool to get the latest information when needed.`),
-      ...mappedMessages
-    ] });
+    console.log('✅ Streaming complete')
+    return fullContent
 
-if (!res || !res.messages || res.messages.length === 0) {
-  throw new Error("AI returned empty response");
-}             
-
-return res.messages.at(-1)?.content || "No response";
   } catch (error) {
-    console.error(' Error in GenerateResponce:', error.message);
-    throw error;
+    console.error('❌ Error in GenerateResponceStream:', error.message)
+    throw error
   }
+}
+
+
+// ✅ Non-streaming fallback (useful for title gen, testing etc.)
+export async function GenerateResponce(messages) {
+  let fullContent = ''
+  await GenerateResponceStream(messages, (chunk) => {
+    fullContent += chunk
+  })
+  return fullContent || "No response"
 }
 
 
 export async function GeneratetheTitle(message) {
   try {
-    if (!message || !message.trim()) {
-      throw new Error("Message cannot be empty for title generation");
-    }
+    if (!message?.trim()) throw new Error("Message cannot be empty")
 
-    console.log(`📝 Generating title for: "${message.substring(0, 50)}..."`);
+    console.log(`📝 Generating title for: "${message.substring(0, 50)}..."`)
+
     const res = await MistralModel.invoke([
-      new SystemMessage(`You are a helpful assistant that generates a title for a given message. The title should be concise and capture the essence of the message.
-      
-      user will provide you with first message of conversation and you will generate a title for that conversation. The title should be 2 - 4 words and should be relevant , engaging giving users a quick understanding of the conversation.`),
-      new HumanMessage(`Generate a title for first : ${message}`)
-    ]);
+      new SystemMessage(`Generate a 2-4 word title for a conversation based on the user's first message. 
+        Be concise, relevant, and engaging.`),
+      new HumanMessage(`First message: ${message}`)
+    ])
 
-    if (!res || !res.text) {
-      throw new Error("Title generation returned empty response");
-    }
+    const title = Array.isArray(res.content)
+      ? res.content.map(c => c.text ?? c).join('')
+      : res.content
 
-    console.log(`✅ Title generated: "${res.text}"`);
-    return res.text;
+    console.log(`✅ Title generated: "${title}"`)
+    return title
+
   } catch (error) {
-    console.error('❌ Error in GeneratetheTitle:', error.message);
-    throw error;
+    console.error('❌ Error in GeneratetheTitle:', error.message)
+    throw error
   }
 }

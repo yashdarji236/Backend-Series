@@ -3,6 +3,7 @@ import { SendMessage , GetChat , GetMessages, DeleteChat} from '../controller/ch
 import { authMiddleware } from '../middleware/auth.middleware.js';
 const router = Router()
 router.post('/message' , authMiddleware  , SendMessage )
+router.get('/stream', authMiddleware, StreamMessage)  
 router.get('/' , authMiddleware , GetChat)
 router.get('/:chatId/messages' , authMiddleware , GetMessages)
 router.delete('/:chatId/delete' , authMiddleware ,DeleteChat )

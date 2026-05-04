@@ -110,3 +110,24 @@ export async function DeleteChat(req,res){
         message:"chat is successfully deleted!"
     })
 }
+export async function StreamMessage(req, res) {
+  const { messages } = req.body  // or req.query depending on your setup
+  
+  // SSE Headers — tells browser "this is a stream, keep connection open"
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Connection', 'keep-alive')
+
+  try {
+    await GenerateResponceStream(messages, (chunk) => {
+      res.write(`data: ${JSON.stringify({ chunk })}\n\n`)  // send each word
+    })
+
+    res.write(`data: [DONE]\n\n`)  // tell frontend streaming is finished
+    res.end()
+
+  } catch (err) {
+    res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`)
+    res.end()
+  }
+}
