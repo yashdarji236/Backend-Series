@@ -1,17 +1,25 @@
-import {tavily} from '@tavily/core'
-
+import { tavily } from '@tavily/core'
 
 const api = tavily({
     apiKey: process.env.TAVILY_API_KEY,
 })
 
+export const internetSearch = async ({ query }) => {
+    try {
+        // ✅ Append today's date so results are always fresh
+        const today = new Date().toISOString().split('T')[0]
+        const freshQuery = `${query} ${today}`
 
-export const internetSearch = async ({query}) => {
-    const res =  await api.search(query,{
+        const res = await api.search(freshQuery, {
             maxResults: 5,
-            searchDepth: "basic",
+            searchDepth: "advanced",  // ✅ was "basic" — advanced gives fresher results
+            includeAnswer: true,      // ✅ Tavily gives a direct answer, saves LLM work
+        })
 
+        return JSON.stringify(res)   // ✅ was json.stringify (lowercase = broken!)
 
-    })
-    return json.stringify(res);
+    } catch (error) {
+        console.error('❌ Tavily search error:', error.message)
+        return "Search failed, please try again."
+    }
 }
