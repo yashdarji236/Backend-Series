@@ -33,7 +33,7 @@ const Agent = createReactAgent({
 const agentConfig = {
   recursionLimit: 10  // max 10 steps total
 }
-const SYSTEM_PROMPT = `You are a helpful assistant named AskNova developed by Yash.
+const SYSTEM_PROMPT = `You are a helpful assistant named asknova developed by Yash.
 Today's date is ${new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}.
 
 STRICT RULES:
