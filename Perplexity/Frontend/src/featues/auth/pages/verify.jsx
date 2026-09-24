@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import logoImg from '../../../assets/logo.png';
 
 export const slides = [
   { url: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&q=90', mood: 'Ask Anything', sub: 'Real answers, not just links' },
@@ -120,11 +121,7 @@ export const ImagePanel = () => {
       }} />
 
       <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e8e8f0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-           <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
-           <line x1="12" y1="4" x2="12" y2="20"/>
-           <line x1="4" y1="12" x2="20" y2="12"/>
-        </svg>
+        <img src={logoImg} alt="AskNova Logo" className="w-6 h-6 object-contain rounded-full" />
         <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">asknova</span>
       </div>
 

@@ -1,25 +1,34 @@
 import { tavily } from '@tavily/core'
 
-const api = tavily({
-    apiKey: process.env.TAVILY_API_KEY,
-})
-
-export const internetSearch = async ({ query }) => {
+export const internetSearch = async (input) => {
     try {
-        // ✅ Append today's date so results are always fresh
-        const today = new Date().toISOString().split('T')[0]
-        const freshQuery = `${query} ${today}`
+        const query = (typeof input === 'object' && input !== null) ? input.query : input;
+        if (!query || typeof query !== 'string' || !query.trim()) {
+            return "No valid query provided for search.";
+        }
+
+        const apiKey = process.env.TAVILY_API_KEY;
+        if (!apiKey) {
+            console.warn("⚠️ TAVILY_API_KEY is not configured.");
+            return "Search unavailable (missing API key).";
+        }
+
+        const api = tavily({ apiKey });
+        const today = new Date().toISOString().split('T')[0];
+        const freshQuery = `${query.trim()} ${today}`;
+
+        console.log(`🌐 Performing Tavily search for: "${freshQuery}"`);
 
         const res = await api.search(freshQuery, {
-            maxResults: 5,
-            searchDepth: "advanced",  // ✅ was "basic" — advanced gives fresher results
-            includeAnswer: true,      // ✅ Tavily gives a direct answer, saves LLM work
-        })
+            maxResults: 3,
+            searchDepth: "basic",
+            includeAnswer: true,
+        });
 
-        return JSON.stringify(res)   // ✅ was json.stringify (lowercase = broken!)
+        return JSON.stringify(res);
 
     } catch (error) {
-        console.error('❌ Tavily search error:', error.message)
-        return "Search failed, please try again."
+        console.error('❌ Tavily search error:', error.message);
+        return "Search failed, please try again.";
     }
-}
+}

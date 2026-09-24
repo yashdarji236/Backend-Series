@@ -1,8 +1,16 @@
 import axios from 'axios';
 import { store } from '../../../app.store';
 
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:3000';
+  }
+  return 'https://perplexity-72qa.onrender.com';
+};
+
 const api = axios.create({
-  baseURL: 'https://perplexity-72qa.onrender.com',
+  baseURL: getBaseURL(),
   withCredentials: true,
 });
 

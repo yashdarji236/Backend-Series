@@ -1,3 +1,5 @@
+import 'dotenv/config'
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { ChatMistralAI } from '@langchain/mistralai'
 import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages'
 import { tool } from '@langchain/core/tools'
@@ -5,16 +7,26 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt'
 import * as zod from 'zod'
 import { internetSearch } from './internet.service.js'
 
-const MistralModel = new ChatMistralAI({
-  model: 'mistral-small-latest',
-  apiKey: process.env.MISTRAL_API_KEY,
-  streaming: true,
-  maxToolCallRoundtrips: 1, // ✅ Keep streaming true on the model
-})
+// Primary model: Gemini 2.5 Flash
+const getLlmModel = () => {
+  if (process.env.GEMINI_AI_API) {
+    return new ChatGoogleGenerativeAI({
+      model: 'gemini-2.5-flash',
+      apiKey: process.env.GEMINI_AI_API,
+    })
+  }
+  return new ChatMistralAI({
+    model: 'mistral-small-latest',
+    apiKey: process.env.MISTRAL_API_KEY,
+    streaming: true,
+  })
+}
+
+const llm = getLlmModel()
 
 const SearchInternetTool = tool(
-  async ({ query }) => {
-    const result = await internetSearch(query)
+  async (input) => {
+    const result = await internetSearch(input)
     return typeof result === 'string' ? result : JSON.stringify(result)
   },
   {
@@ -27,12 +39,10 @@ const SearchInternetTool = tool(
 )
 
 const Agent = createReactAgent({
-  llm: MistralModel,
+  llm,
   tools: [SearchInternetTool],
 })
-const agentConfig = {
-  recursionLimit: 10  // max 10 steps total
-}
+
 const SYSTEM_PROMPT = `You are a helpful assistant named asknova developed by Yash.
 Today's date is ${new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}.
 
@@ -62,22 +72,27 @@ export async function GenerateResponceStream(messages, onChunk) {
         messages: [new SystemMessage(SYSTEM_PROMPT), ...mappedMessages]
       },
       {
-        streamMode: 'messages' ,
-        recursionLimit: 10 // ✅ This streams token-by-token chunks
+        streamMode: 'messages',
+        recursionLimit: 10
       }
     )
 
     let fullContent = ''
 
     for await (const [chunk, metadata] of stream) {
-      // Filter only final AI response chunks, skip tool call chunks
-      const isAIChunk = chunk?.constructor?.name === 'AIMessageChunk'
-      const isFinalNode = metadata?.langgraph_node === 'agent'
-      const hasText = typeof chunk?.content === 'string' && chunk.content.length > 0
+      const isAIChunk = chunk?.constructor?.name === 'AIMessageChunk' || chunk?._getType?.() === 'ai'
+      let textContent = ''
+      if (typeof chunk?.content === 'string') {
+        textContent = chunk.content
+      } else if (Array.isArray(chunk?.content)) {
+        textContent = chunk.content.map(c => c.text || c).join('')
+      }
 
-      if (isAIChunk && isFinalNode && hasText && !chunk?.tool_call_chunks?.length) {
-        fullContent += chunk.content
-        onChunk(chunk.content) // 🔁 Send each token to caller
+      const hasText = textContent.length > 0
+
+      if (isAIChunk && hasText && !chunk?.tool_call_chunks?.length && !chunk?.tool_calls?.length) {
+        fullContent += textContent
+        if (onChunk) onChunk(textContent)
       }
     }
 
@@ -90,8 +105,7 @@ export async function GenerateResponceStream(messages, onChunk) {
   }
 }
 
-
-// ✅ Non-streaming fallback (useful for title gen, testing etc.)
+// ✅ Non-streaming response generator
 export async function GenerateResponce(messages) {
   let fullContent = ''
   await GenerateResponceStream(messages, (chunk) => {
@@ -100,16 +114,14 @@ export async function GenerateResponce(messages) {
   return fullContent || "No response"
 }
 
-
 export async function GeneratetheTitle(message) {
   try {
-    if (!message?.trim()) throw new Error("Message cannot be empty")
+    if (!message?.trim()) return "New Chat"
 
     console.log(`📝 Generating title for: "${message.substring(0, 50)}..."`)
 
-    const res = await MistralModel.invoke([
-      new SystemMessage(`Generate a 2-4 word title for a conversation based on the user's first message. 
-        Be concise, relevant, and engaging.`),
+    const res = await llm.invoke([
+      new SystemMessage(`Generate a 2-4 word title for a conversation based on the user's first message. Output ONLY the title text without quotes.`),
       new HumanMessage(`First message: ${message}`)
     ])
 
@@ -117,11 +129,12 @@ export async function GeneratetheTitle(message) {
       ? res.content.map(c => c.text ?? c).join('')
       : res.content
 
-    console.log(`✅ Title generated: "${title}"`)
-    return title
+    const cleanedTitle = String(title).trim().replace(/^["']|["']$/g, '') || "New Chat"
+    console.log(`✅ Title generated: "${cleanedTitle}"`)
+    return cleanedTitle
 
   } catch (error) {
     console.error('❌ Error in GeneratetheTitle:', error.message)
-    throw error
+    return "New Chat"
   }
 }

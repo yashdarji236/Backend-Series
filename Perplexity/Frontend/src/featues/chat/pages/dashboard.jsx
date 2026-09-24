@@ -5,6 +5,7 @@ import { useChat } from '../hooks/useChat'
 import { useAuth } from '../../auth/hook/useAuth'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import logoImg from '../../../assets/logo.png'
 
 /* ─── Icons ─────────────────────────────────────────────────────── */
 const Icons = {
@@ -39,12 +40,10 @@ const Icons = {
     </svg>
   ),
   Logo: () => (
-    <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#e8e8f0" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="6 9 12 15 18 9"></polyline><line x1="3" y1="12" x2="21" y2="12"></line><line x1="5" y1="5" x2="19" y2="5"></line><line x1="5" y1="19" x2="19" y2="19"></line>
-  </svg>
-  <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">asknova</span>
-</div>
+    <div className="flex items-center gap-2">
+      <img src={logoImg} alt="AskNova Logo" className="w-6 h-6 object-contain rounded-full" />
+      <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">asknova</span>
+    </div>
   ),
   SidebarCollapse: () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

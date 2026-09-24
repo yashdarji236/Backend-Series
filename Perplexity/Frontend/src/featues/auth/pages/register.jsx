@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hook/useAuth';
 import { useSelector } from 'react-redux';
 
+import logoImg from '../../../assets/logo.png';
+
 export const slides = [
   { url: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&q=90', mood: 'Ask Anything', sub: 'Real answers, not just links' },
   { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1400&q=90', mood: 'Know Instantly', sub: 'AI-powered search with cited sources' },
@@ -121,9 +123,7 @@ export const ImagePanel = () => {
       }} />
 
       <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#e8e8f0" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="6 9 12 15 18 9"></polyline><line x1="3" y1="12" x2="21" y2="12"></line><line x1="5" y1="5" x2="19" y2="5"></line><line x1="5" y1="19" x2="19" y2="19"></line>
-        </svg>
+        <img src={logoImg} alt="AskNova Logo" className="w-6 h-6 object-contain rounded-full" />
         <span className="text-[15px] font-medium text-[#e8e8f0] tracking-wide">asknova</span>
       </div>
 
